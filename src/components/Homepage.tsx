@@ -57,6 +57,13 @@ export default function Homepage() {
   //   },
   // ];
 
+  const options = {
+    Composition: ["Pie chart", "Donought chart", "Stacked bar chart"],
+    Distribution: ["Bar chart (Histogram)", "Line chart (Area)"],
+    Trends: ["Coloumn char", "Area chart", "Line chart"],
+    Comparision: ["Line chart", "Scatter plot"],
+  };
+
   const [response, setResponse] = useState();
   const [chartType, setChartType] = useState("trends");
   const [chartData, setChartData] = useState({
@@ -152,12 +159,20 @@ export default function Homepage() {
           >
             IMPORT CSV
           </button>
-
-          <label
-            for="countries"
-            class="block mb-2 text-sm text-gray-900 dark:text-white font-semibold"
-          >
+          <br />
+          <br />
+          <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
             *Choose the purpose of Vizualization
+          </label>
+          <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option value="comparision">Comparision</option>
+            <option value="distribution">Distribution</option>
+            <option value="composition">Composition</option>
+            <option value="trends">Trends</option>
+          </select>
+          <br />
+          <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
+            *Choose the options from chart types
           </label>
           <select
             id="countries"
