@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Linechart from "./Linechart";
 import {
   Chart as ChartJS,
@@ -55,6 +56,9 @@ export default function Homepage() {
       userLost: 234,
     },
   ];
+
+  const [response, setResponse] = useState();
+  const [chartType, setChartType] = useState("Continious");
   const [chartData, setChartData] = useState({
     labels: Data.map((data) => data.year),
     datasets: [
@@ -114,10 +118,37 @@ export default function Homepage() {
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
 
+  var formData = new FormData();
+
+  const SendData = async (e) => {
+    e.preventDefault();
+
+    formData.append("file", file);
+    formData.append("chartType", chartType);
+    console.log(
+      "FormData:",
+      formData.getAll("file"),
+      formData.getAll("chartType")
+    );
+
+    try {
+      const res = await axios({
+        method: "post",
+        url: "https://daviz-backend-production.up.railway.app/api",
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setResponse(res);
+      console.log("Response:", res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <div>
-      <h1>DaViz</h1>
-      <div style={{ textAlign: "center" }}>
+    <div className=" w-full h-full px-8 py-5">
+      <h1 className=" text-center font-semibold text-2xl">DaViz</h1>
+      <div className=" w-1/2 text-center mx-auto ">
         <form>
           <input
             type={"file"}
@@ -127,42 +158,75 @@ export default function Homepage() {
           />
 
           <button
-            className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md"
+            className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md my-2"
             onClick={(e) => {
               handleOnSubmit(e);
             }}
           >
             IMPORT CSV
           </button>
+
+          <label
+            for="countries"
+            class="block mb-2 text-sm text-gray-900 dark:text-white font-semibold"
+          >
+            *Choose the purpose of Vizualization
+          </label>
+          <select
+            id="countries"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            <option value="Continious">Continious</option>
+            <option value="Comparision">Comparision</option>
+            <option value="Distribution">Distribution</option>
+            <option value="Composition">Composition</option>
+            <option value="Trends">Trends</option>
+          </select>
+
+          <button
+            className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md my-2"
+            onClick={(e) => SendData(e)}
+          >
+            Send
+          </button>
         </form>
+      </div>
 
-        <br />
-
-        <h1>Chart</h1>
-
-        <Linechart chartData={chartData} />
-
-        <br />
-
-        <table>
-          <thead>
-            <tr key={"header"}>
-              {headerKeys.map((key) => (
-                <th>{key}</th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {array.map((item) => (
-              <tr key={item.id}>
-                {Object.values(item).map((val) => (
-                  <td>{val}</td>
+      <br />
+      <div className=" flex flex-row justify-between mx-auto ">
+        <div className=" w-1/2 text-center flex flex-col justify-around mr-5">
+          <h1>Table</h1>
+          <table className=" border-2 border-solid text-center px-2 ">
+            <thead className=" border-2 border-solid text-center px-2 ">
+              <tr key={"header"}>
+                {headerKeys.map((key) => (
+                  <th className=" border-2 border-solid text-center px-2 ">
+                    {key}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody className=" border-2 border-solid text-center px-2 ">
+              {array.map((item) => (
+                <tr key={item.id}>
+                  {Object.values(item).map((val) => (
+                    <td className=" border-2 border-solid text-center px-2 ">
+                      {val}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <br />
+
+        <div className=" w-1/2 ml-5">
+          <h1>Chart</h1>
+          <Linechart chartData={chartData} />
+        </div>
       </div>
     </div>
   );
