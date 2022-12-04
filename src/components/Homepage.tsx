@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Linechart from "./Linechart";
+import { Chart, LogarithmicScale } from "chart.js";
+import zoomPlugin from "chartjs-plugin-zoom";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -20,8 +23,10 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  LogarithmicScale
 );
+Chart.register(zoomPlugin);
 
 export default function Homepage() {
   // const Data = [
@@ -129,7 +134,7 @@ export default function Homepage() {
     formData.append("csv_file", file);
     formData.append("data_type", userPurpose);
     formData.append("x_axis", xAxis);
-    formData.append("y_axes", yAxis);
+    formData.append("y_axes", yAxis.join(","));
     console.log(
       "FormData:",
       formData.getAll("csv_file"),
@@ -297,7 +302,17 @@ export default function Homepage() {
         <br />
 
         <div className=" w-1/2 ml-5">
-          <h1>Chart</h1>
+          <div className=" flex flex-row justify-between">
+            <div>
+              <h1>Chart</h1>
+            </div>
+            <div>
+              <button className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md my-2 text-xs">
+                reset
+              </button>
+            </div>
+          </div>
+
           <Linechart chartData={chartData} />
         </div>
       </div>

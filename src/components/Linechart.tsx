@@ -15,7 +15,32 @@ export default function Linechart({ chartData }) {
             legend: {
               display: false,
             },
+            zoom: {
+              pan: {
+                enabled: true,
+                mode: "x",
+                modifierKey: "ctrl",
+              },
+              zoom: {
+                drag: {
+                  enabled: true,
+                },
+                pinch: {
+                  enabled: true,
+                },
+                mode: "x",
+              },
+            },
           },
+          // scales: {
+          //   x: {
+          //     display: true,
+          //   },
+          //   y: {
+          //     display: true,
+          //     type: "logarithmic",
+          //   },
+          // },
         }}
       />
     </div>
