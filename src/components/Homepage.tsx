@@ -24,58 +24,44 @@ ChartJS.register(
 );
 
 export default function Homepage() {
-  const Data = [
-    {
-      id: 1,
-      year: 2016,
-      userGain: 80000,
-      userLost: 823,
-    },
-    {
-      id: 2,
-      year: 2017,
-      userGain: 45677,
-      userLost: 345,
-    },
-    {
-      id: 3,
-      year: 2018,
-      userGain: 78888,
-      userLost: 555,
-    },
-    {
-      id: 4,
-      year: 2019,
-      userGain: 90000,
-      userLost: 4555,
-    },
-    {
-      id: 5,
-      year: 2020,
-      userGain: 4300,
-      userLost: 234,
-    },
-  ];
+  // const Data = [
+  //   {
+  //     id: 1,
+  //     year: 2016,
+  //     userGain: 80000,
+  //     userLost: 823,
+  //   },
+  //   {
+  //     id: 2,
+  //     year: 2017,
+  //     userGain: 45677,
+  //     userLost: 345,
+  //   },
+  //   {
+  //     id: 3,
+  //     year: 2018,
+  //     userGain: 78888,
+  //     userLost: 555,
+  //   },
+  //   {
+  //     id: 4,
+  //     year: 2019,
+  //     userGain: 90000,
+  //     userLost: 4555,
+  //   },
+  //   {
+  //     id: 5,
+  //     year: 2020,
+  //     userGain: 4300,
+  //     userLost: 234,
+  //   },
+  // ];
 
   const [response, setResponse] = useState();
-  const [chartType, setChartType] = useState("Continious");
+  const [chartType, setChartType] = useState("trends");
   const [chartData, setChartData] = useState({
-    labels: Data.map((data) => data.year),
-    datasets: [
-      {
-        label: "Users Gained ",
-        data: Data.map((data) => data.userGain),
-        backgroundColor: [
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-          "#50AF95",
-          "#f3ba2f",
-          "#2a71d0",
-        ],
-        borderColor: "black",
-        borderWidth: 2,
-      },
-    ],
+    labels: [],
+    datasets: [],
   });
 
   const [file, setFile] = useState();
@@ -123,8 +109,8 @@ export default function Homepage() {
   const SendData = async (e) => {
     e.preventDefault();
 
-    formData.append("file", file);
-    formData.append("chartType", chartType);
+    formData.append("csv_file", file);
+    formData.append("data_type", chartType);
     console.log(
       "FormData:",
       formData.getAll("file"),
@@ -138,7 +124,8 @@ export default function Homepage() {
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setResponse(res);
+      setResponse(res.data);
+      setChartData(res.data);
       console.log("Response:", res);
     } catch (error) {
       console.log(error);
@@ -176,11 +163,10 @@ export default function Homepage() {
             id="countries"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            <option value="Continious">Continious</option>
-            <option value="Comparision">Comparision</option>
-            <option value="Distribution">Distribution</option>
-            <option value="Composition">Composition</option>
-            <option value="Trends">Trends</option>
+            <option value="comparision">Comparision</option>
+            <option value="distribution">Distribution</option>
+            <option value="composition">Composition</option>
+            <option value="trends">Trends</option>
           </select>
 
           <button

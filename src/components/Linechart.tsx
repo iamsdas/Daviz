@@ -12,7 +12,7 @@ export default function Linechart({ chartData }) {
           plugins: {
             title: {
               display: true,
-              text: "example caption",
+              // text: "example caption",
             },
             legend: {
               display: false,
