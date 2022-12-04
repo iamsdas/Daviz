@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import Linechart from "./Linechart";
 import {
@@ -11,7 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { Chart } from "react-chartjs-2";
+import Select from "react-select";
 
 ChartJS.register(
   CategoryScale,
@@ -64,8 +64,12 @@ export default function Homepage() {
     Comparision: ["Line chart", "Scatter plot"],
   };
 
+  const [xAxis, setXAxis] = useState("");
+  const [yAxis, setYAxis] = useState<any>(null);
   const [response, setResponse] = useState();
-  const [chartType, setChartType] = useState("trends");
+  const [chartType, setChartType] = useState("");
+  const [userChartType, setUserChartType] = useState("");
+  const [userPurpose, setUserPurpose] = useState("comparision");
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [],
@@ -110,6 +114,12 @@ export default function Homepage() {
   };
 
   const headerKeys = Object.keys(Object.assign({}, ...array));
+  const yAxisOptions = headerKeys.map((option) => ({
+    value: option,
+    label: option,
+  }));
+
+  console.log(headerKeys);
 
   var formData = new FormData();
 
@@ -117,11 +127,15 @@ export default function Homepage() {
     e.preventDefault();
 
     formData.append("csv_file", file);
-    formData.append("data_type", chartType);
+    formData.append("data_type", userPurpose);
+    formData.append("x_axis", xAxis);
+    formData.append("y_axes", yAxis);
     console.log(
       "FormData:",
-      formData.getAll("file"),
-      formData.getAll("chartType")
+      formData.getAll("csv_file"),
+      formData.getAll("data_type"),
+      formData.getAll("x_axis"),
+      formData.getAll("y_axes")
     );
 
     try {
@@ -131,8 +145,8 @@ export default function Homepage() {
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setResponse(res.data);
-      setChartData(res.data);
+      setResponse(res.data.data);
+      setChartData(res.data.data);
       console.log("Response:", res);
     } catch (error) {
       console.log(error);
@@ -160,22 +174,13 @@ export default function Homepage() {
             IMPORT CSV
           </button>
           <br />
+
           <br />
           <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
             *Choose the purpose of Vizualization
           </label>
-          <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option value="comparision">Comparision</option>
-            <option value="distribution">Distribution</option>
-            <option value="composition">Composition</option>
-            <option value="trends">Trends</option>
-          </select>
-          <br />
-          <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
-            *Choose the options from chart types
-          </label>
           <select
-            id="countries"
+            onChange={(e) => setUserPurpose(e.target.value)}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
             <option value="comparision">Comparision</option>
@@ -183,6 +188,73 @@ export default function Homepage() {
             <option value="composition">Composition</option>
             <option value="trends">Trends</option>
           </select>
+
+          <br />
+          <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
+            *Choose the options from chart types
+          </label>
+          <select
+            onChange={(e) => setUserChartType(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            {
+              {
+                composition: options.Composition.map((item, index) => {
+                  return (
+                    <option value={item} key={index}>
+                      {item}
+                    </option>
+                  );
+                }),
+                distribution: options.Distribution.map((item, index) => {
+                  return (
+                    <option value={item} key={index}>
+                      {item}
+                    </option>
+                  );
+                }),
+                comparision: options.Comparision.map((item, index) => {
+                  return (
+                    <option value={item} key={index}>
+                      {item}
+                    </option>
+                  );
+                }),
+                trends: options.Trends.map((item, index) => {
+                  return (
+                    <option value={item} key={index}>
+                      {item}
+                    </option>
+                  );
+                }),
+              }[userPurpose]
+            }
+          </select>
+
+          <br />
+          <label className="block mb-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
+            * Choose the x-axis
+          </label>
+          <select
+            onChange={(e) => setXAxis(e.target.value)}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          >
+            {headerKeys.map((item, index) => (
+              <option key={index} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+
+          <br />
+
+          <Select
+            options={yAxisOptions}
+            onChange={(e) =>
+              setYAxis(Array.isArray(e) ? e.map((hotel) => hotel.label) : [])
+            }
+            isMulti
+          />
 
           <button
             className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md my-2"
