@@ -17,6 +17,16 @@ import {
 } from "chart.js";
 import Select from "react-select";
 
+const colors = [
+  'rgb(255, 99, 132)',
+  'rgb(255, 159, 64)',
+  'rgb(255, 205, 86)',
+   'rgb(75, 192, 192)',
+  'rgb(54, 162, 235)',
+  'rgb(153, 102, 255)',
+   'rgb(201, 203, 207)'
+];
+  
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -117,14 +127,24 @@ export default function Homepage() {
 
     try {
       const res = await axios({
-        method: "post",
-        url: "https://daviz-backend-production.up.railway.app/api",
+        method: 'post',
+        url: 'https://daviz-backend-production.up.railway.app/api',
         data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       setResponse(res.data.data);
-      setChartData(res.data.data);
-      console.log("Response:", res);
+      setChartData(
+         {
+          ...res.data.data,
+          datasets: [
+            ...res.data.data.datasets.map((dataset, index) => ({
+              ...dataset,
+              borderColor: colors[index % colors.length],
+            })),
+          ],
+        }
+      );
+      console.log('Response:', res);
     } catch (error) {
       console.log(error);
     }
