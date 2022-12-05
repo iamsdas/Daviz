@@ -51,6 +51,7 @@ export default function Homepage() {
   const [response, setResponse] = useState();
   const [chartType, setChartType] = useState("");
   const [userChartType, setUserChartType] = useState("");
+  const [analytics, setAnalytics] = useState([]);
   const [userPurpose, setUserPurpose] = useState("comparision");
   const [chartData, setChartData] = useState({
     labels: [],
@@ -144,10 +145,11 @@ export default function Homepage() {
           ],
         }
       );
-      console.log('Response:', res);
+      setAnalytics(res.data.analytics);
     } catch (error) {
       console.log(error);
     }
+    
 
     setState(1);
   };
@@ -254,8 +256,22 @@ export default function Homepage() {
   );
 
   const calculations = (
-    <div>
-      <h1>show calculations</h1>
+    <div className="grid grid-cols-2 gap-4">
+      {analytics.map((item) => (
+        <table className="m-2 table-auto border-collapse">
+          <thead className="border border-black p-1">
+            <th className="">{item.name}</th>
+          </thead>
+          <tbody>
+            {Object.keys(item).filter(key=>key!=='name').map((key) => (
+              <tr>
+                <td className="border border-black p-1">{key}</td>
+                <td className="border border-black p-1">{item[key]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ))}
     </div>
   );
 

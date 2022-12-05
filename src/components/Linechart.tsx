@@ -13,7 +13,7 @@ export default function Linechart({ chartData }) {
               // text: "example caption",
             },
             legend: {
-              display: false,
+              position: "top"
             },
             zoom: {
               pan: {
