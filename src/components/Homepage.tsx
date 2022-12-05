@@ -3,6 +3,7 @@ import axios from "axios";
 import Linechart from "./Linechart";
 import { Chart, LogarithmicScale } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
+import { FixedSizeList as List } from "react-window";
 
 import {
   Chart as ChartJS,
@@ -131,11 +132,37 @@ export default function Homepage() {
     setState(1);
   };
 
+  const Header = ({ key, style }) => (
+    <div key={key} style={style}>
+      {headerKeys.map((key) => (
+        <th className=" border-2 border-solid text-center px-2 w-32 ">{key}</th>
+      ))}
+    </div>
+  );
+
+  const Row = ({ index, style }) => (
+    <div>
+      <tr key={index} style={style}>
+        {Object.values(array[index]).map((val) => (
+          <td className=" border-2 border-solid text-center px-2 w-32 ">
+            {val}
+          </td>
+        ))}
+      </tr>
+    </div>
+  );
+
   const userTable = (
-    <div className=" w-1/2 text-center mr-5 h-[700px] overflow-y-auto">
+    <div className=" w-11/12 text-center mr-5 h-[700px] overflow-y-auto flex justify-center text-center">
       <div className="overflow-y-scroll snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around">
         <h1 className=" font-semibold">Table</h1>
-        <table className=" border-2 border-solid text-center px-2 ">
+        <List width={800} height={30} itemCount={1} itemSize={50}>
+          {Header}
+        </List>
+        <List width={800} height={600} itemCount={array.length} itemSize={50}>
+          {Row}
+        </List>
+        {/* <table className=" border-2 border-solid text-center px-2 ">
           <thead className=" border-2 border-solid text-center px-2 ">
             <tr key={"header"}>
               {headerKeys.map((key) => (
@@ -145,7 +172,6 @@ export default function Homepage() {
               ))}
             </tr>
           </thead>
-
           <tbody className=" border-2 border-solid text-center px-2 ">
             {array.map((item) => (
               <tr key={item.id}>
@@ -157,7 +183,7 @@ export default function Homepage() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table> */}
       </div>
     </div>
   );
