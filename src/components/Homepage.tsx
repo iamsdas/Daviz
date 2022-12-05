@@ -207,6 +207,12 @@ export default function Homepage() {
     </div>
   );
 
+  const calculations = (
+    <div>
+      <h1>show calculations</h1>
+    </div>
+  );
+
   const Component = [
     {
       name: "Table",
@@ -215,6 +221,10 @@ export default function Homepage() {
     {
       name: "Chart",
       value: userChart,
+    },
+    {
+      name: "Calculations",
+      value: calculations,
     },
   ];
 
@@ -335,12 +345,12 @@ export default function Homepage() {
       </div>
 
       <div className=" w-8/12 flex flex-col h-full mx-auto items-start">
-        <div className="flex flex-row justify-around flex-nowrap bg-grey w-1/3 mx-auto border-2 border-solid h-14 bg-slate-50 ">
+        <div className="flex flex-row justify-around flex-nowrap bg-grey w-2/3 mx-auto border-2 border-solid h-14 bg-slate-50 ">
           {Component.map((value, index) => {
             return (
               <div key={index}>
                 <button
-                  className="px-2 py-1 hover:brightness-105 bg-slate-50 hover:bg-slate-50 hover:border-2 hover:rounded-lg rounded-sm m-2 font-semibold hover:scale-105"
+                  className="px-2 mx-5 py-1 hover:brightness-105 bg-slate-50 hover:bg-slate-50 hover:border-2 hover:rounded-lg rounded-sm m-2 font-semibold hover:scale-105"
                   onClick={() => setState(index)}
                 >
                   {value.name}
