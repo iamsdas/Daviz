@@ -7,3 +7,31 @@ html, body{
     font-family: 'Raleway', sans-serif;
     font-weight: 500;
 }
+
+
+@layer utilities {
+    .snap {
+        scroll-snap-type: var(--scroll-snap-direction) var(--scroll-snap-constraint);
+    }
+
+    .snap-y {
+        --scroll-snap-direction: y;
+    }
+
+    .snap-mandatory {
+        --scroll-snap-constraint: mandatory;
+    }
+
+    .snap-start {
+        scroll-snap-align: start;
+    }
+
+    .hide-scroll-bar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .hide-scroll-bar::-webkit-scrollbar {
+        display: none;
+    }
+}

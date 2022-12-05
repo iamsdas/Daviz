@@ -98,6 +98,8 @@ export default function Homepage() {
   const SendData = async (e) => {
     e.preventDefault();
 
+    if (xAxis == "") setXAxis(headerKeys[0]);
+
     var formData = new FormData();
 
     formData.append("csv_file", file);
@@ -125,34 +127,38 @@ export default function Homepage() {
     } catch (error) {
       console.log(error);
     }
+
+    setState(1);
   };
 
   const userTable = (
-    <div className=" w-1/2 text-center flex flex-col justify-around mr-5">
-      <h1 className=" font-semibold">Table</h1>
-      <table className=" border-2 border-solid text-center px-2 ">
-        <thead className=" border-2 border-solid text-center px-2 ">
-          <tr key={"header"}>
-            {headerKeys.map((key) => (
-              <th className=" border-2 border-solid text-center px-2 ">
-                {key}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
-        <tbody className=" border-2 border-solid text-center px-2 ">
-          {array.map((item) => (
-            <tr key={item.id}>
-              {Object.values(item).map((val) => (
-                <td className=" border-2 border-solid text-center px-2 ">
-                  {val}
-                </td>
+    <div className=" w-1/2 text-center mr-5 h-[700px] overflow-y-auto">
+      <div className="overflow-y-scroll snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around">
+        <h1 className=" font-semibold">Table</h1>
+        <table className=" border-2 border-solid text-center px-2 ">
+          <thead className=" border-2 border-solid text-center px-2 ">
+            <tr key={"header"}>
+              {headerKeys.map((key) => (
+                <th className=" border-2 border-solid text-center px-2 ">
+                  {key}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody className=" border-2 border-solid text-center px-2 ">
+            {array.map((item) => (
+              <tr key={item.id}>
+                {Object.values(item).map((val) => (
+                  <td className=" border-2 border-solid text-center px-2 ">
+                    {val}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 
@@ -160,11 +166,40 @@ export default function Homepage() {
     <div className=" w-10/12">
       <div className=" flex flex-row justify-between">
         <div>
-          <h1 className=" font-semibold">{userPurpose}</h1>
+          <h1 className=" font-semibold text-lg">{userPurpose}</h1>
         </div>
         <div>
-          <button className=" bg-green-400 hover:brightness-105 px-1 py-2 rounded-md my-2 text-xs">
-            reset
+          <button className=" bg-green-400 hover:brightness-105 p-1 rounded-full mx-1 my-2 text-xs font-bold">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </button>
+          <button className=" bg-green-400 hover:brightness-105 p-1 mx-1 rounded-full my-2 text-xs hover:scale-105 font-bold">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -186,7 +221,7 @@ export default function Homepage() {
   return (
     <div className=" w-full h-full px-8 py-5 flex flex-row">
       <div className=" w-4/12 bg-slate-50 p-2 rounded-md h-[780px]">
-        <h1 className=" text-center font-semibold text-2xl">DaViz</h1>
+        <h1 className=" text-left pl-5 font-bold font-mono text-3xl">DaViz</h1>
         <div className=" text-center mx-auto my-16 ">
           <form>
             <input
