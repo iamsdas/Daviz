@@ -163,17 +163,21 @@ export default function Homepage() {
     try {
       const res = await axios({
         method: "post",
-        url: "https://daviz-backend-production.up.railway.app/api",
+        url: "http://127.0.0.1:8000/api",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
       });
       setResponse(res.data.data);
+      if (res.data.data.datasets.length > 10)
+        res.data.data.datasets.length = 10;
       setChartData({
         ...res.data.data,
         datasets: [
           ...res.data.data.datasets.map((dataset, index) => ({
             ...dataset,
             borderColor: colors[index % colors.length],
+            backgroundColor:
+              userChartType === "Pie" ? colors : colors[index % colors.length],
           })),
         ],
       });
@@ -282,7 +286,7 @@ export default function Homepage() {
           </button>
         </div>
       </div>
-      <div>
+      <div className=" h-[700px]">
         {
           {
             Line: <Linechart chartData={chartData} />,
@@ -297,10 +301,10 @@ export default function Homepage() {
   );
 
   const calculations = (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid h-[670px] grid-cols-2 gap-4 overflow-y-auto">
       {analytics.map((item) => (
-        <table className="m-2 table-auto border-collapse">
-          <thead className="border border-black p-1">
+        <table className="m-2 table-auto border-collapse bg-slate-50">
+          <thead className="border-2 border-green-400 p-1">
             <th className="">{item.name}</th>
           </thead>
           <tbody>
@@ -308,8 +312,8 @@ export default function Homepage() {
               .filter((key) => key !== "name")
               .map((key) => (
                 <tr>
-                  <td className="border border-black p-1">{key}</td>
-                  <td className="border border-black p-1">{item[key]}</td>
+                  <td className="border-2 border-green-400 p-1">{key}</td>
+                  <td className="border-2 border-green-400 p-1">{item[key]}</td>
                 </tr>
               ))}
           </tbody>
