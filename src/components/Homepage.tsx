@@ -5,7 +5,7 @@ import Barchart from "./Barchart";
 import Scatterchart from "./Scatterchart";
 import Donoughtchart from "./Donoughtchart";
 import Piechart from "./Piechart";
-import { ArcElement, Chart, LogarithmicScale } from "chart.js";
+import { ArcElement, BarElement, Chart, LogarithmicScale } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { FixedSizeList as List } from "react-window";
 
@@ -40,7 +40,8 @@ ChartJS.register(
   Tooltip,
   Legend,
   LogarithmicScale,
-  ArcElement
+  ArcElement,
+  BarElement
 );
 Chart.register(zoomPlugin);
 
@@ -130,6 +131,15 @@ export default function Homepage() {
     e.preventDefault();
 
     if (xAxis == "") setXAxis(headerKeys[0]);
+
+    if (userChartType == "" && userPurpose == "comparision")
+      setUserChartType("Line");
+    else if (userChartType == "" && userPurpose == "distribution")
+      setUserChartType("Bar");
+    else if (userChartType == "" && userPurpose == "composition")
+      setUserChartType("Pie");
+    else if (userChartType == "" && userPurpose == "trends")
+      setUserChartType("Line");
 
     var formData = new FormData();
 
@@ -267,15 +277,17 @@ export default function Homepage() {
           </button>
         </div>
       </div>
-      {
+      <div>
         {
-          Line: <Linechart chartData={chartData} />,
-          Bar: <Barchart chartData={chartData} />,
-          Donought: <Donoughtchart chartData={chartData} />,
-          Pie: <Piechart chartData={chartData} />,
-          Scatter: <Scatterchart chartData={chartData} />,
-        }[userChartType]
-      }
+          {
+            Line: <Linechart chartData={chartData} />,
+            Bar: <Barchart chartData={chartData} />,
+            Donought: <Donoughtchart chartData={chartData} />,
+            Pie: <Piechart chartData={chartData} />,
+            Scatter: <Scatterchart chartData={chartData} />,
+          }[userChartType]
+        }
+      </div>
     </div>
   );
 
