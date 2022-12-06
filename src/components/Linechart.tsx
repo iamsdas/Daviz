@@ -7,8 +7,6 @@ export default function Linechart({ chartData }) {
       <Line
         data={chartData}
         options={{
-          // normalized: true,
-          parsing: false,
           plugins: {
             decimation: {
               enabled: true,
