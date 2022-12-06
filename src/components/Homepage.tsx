@@ -59,7 +59,7 @@ export default function Homepage() {
       { label: "Line chart (Area)", value: "Line" },
     ],
     Trends: [
-      { label: "Coloumn char", value: "Line" },
+      { label: "Coloumn char", value: "Bar" },
       { label: "Area chart", value: "Line" },
       { label: "Line chart", value: "Line" },
     ],
