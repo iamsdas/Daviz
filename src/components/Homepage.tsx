@@ -70,6 +70,7 @@ export default function Homepage() {
   const [state, setState] = useState(0);
   const [response, setResponse] = useState();
   const [chartType, setChartType] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [userChartType, setUserChartType] = useState("");
   const [analytics, setAnalytics] = useState([]);
   const [userPurpose, setUserPurpose] = useState("comparision");
@@ -147,12 +148,14 @@ export default function Homepage() {
     formData.append("data_type", userPurpose);
     formData.append("x_axis", xAxis);
     formData.append("y_axes", yAxis.join(","));
+    formData.append("identifier", identifier);
     console.log(
       "FormData:",
       formData.getAll("csv_file"),
       formData.getAll("data_type"),
       formData.getAll("x_axis"),
-      formData.getAll("y_axes")
+      formData.getAll("y_axes"),
+      formData.getAll("identifier")
     );
 
     try {
@@ -433,6 +436,22 @@ export default function Homepage() {
               }
               isMulti
             />
+
+            <br />
+            <label className="block mb-2 pt-2 text-sm text-gray-900 dark:text-white font-semibold text-left">
+              Choose the identifier (optional)
+            </label>
+            <select
+              onChange={(e) => setIdentifier(e.target.value)}
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            >
+              <option>select...</option>
+              {headerKeys.map((item, index) => (
+                <option key={index} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
 
             <button
               className=" bg-green-400 hover:brightness-105 my-8 py-1 px-2 font-mono font-semibold text-sm rounded-md hover:scale-105"
