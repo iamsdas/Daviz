@@ -18,6 +18,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Decimation,
 } from "chart.js";
 import Select from "react-select";
 
@@ -39,6 +40,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  Decimation,
   LogarithmicScale,
   ArcElement,
   BarElement

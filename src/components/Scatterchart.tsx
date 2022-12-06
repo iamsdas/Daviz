@@ -12,9 +12,9 @@ export default function Scatterchart({ chartData }) {
               display: true,
               // text: "example caption",
             },
-            legend: {
-              position: "top",
-            },
+            // legend: {
+            //   position: "top",
+            // },
             zoom: {
               pan: {
                 enabled: true,
