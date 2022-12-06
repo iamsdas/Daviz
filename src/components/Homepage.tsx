@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Linechart from "./Linechart";
-import { Chart, LogarithmicScale } from "chart.js";
+import Barchart from "./Barchart";
+import Scatterchart from "./Scatterchart";
+import Donoughtchart from "./Donoughtchart";
+import Piechart from "./Piechart";
+import { ArcElement, Chart, LogarithmicScale } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { FixedSizeList as List } from "react-window";
 
@@ -18,15 +22,15 @@ import {
 import Select from "react-select";
 
 const colors = [
-  'rgb(255, 99, 132)',
-  'rgb(255, 159, 64)',
-  'rgb(255, 205, 86)',
-   'rgb(75, 192, 192)',
-  'rgb(54, 162, 235)',
-  'rgb(153, 102, 255)',
-   'rgb(201, 203, 207)'
+  "rgb(255, 99, 132)",
+  "rgb(255, 159, 64)",
+  "rgb(255, 205, 86)",
+  "rgb(75, 192, 192)",
+  "rgb(54, 162, 235)",
+  "rgb(153, 102, 255)",
+  "rgb(201, 203, 207)",
 ];
-  
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -35,16 +39,31 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  LogarithmicScale
+  LogarithmicScale,
+  ArcElement
 );
 Chart.register(zoomPlugin);
 
 export default function Homepage() {
   const options = {
-    Composition: ["Pie chart", "Donought chart", "Stacked bar chart"],
-    Distribution: ["Bar chart (Histogram)", "Line chart (Area)"],
-    Trends: ["Coloumn char", "Area chart", "Line chart"],
-    Comparision: ["Line chart", "Scatter plot"],
+    Composition: [
+      { label: "Pie chart", value: "Pie" },
+      { label: "Donought chart", value: "Donought" },
+      // { label: "Stacked bar chart", value: "Stacked" },
+    ],
+    Distribution: [
+      { label: "Bar chart (Histogram)", value: "Bar" },
+      { label: "Line chart (Area)", value: "Line" },
+    ],
+    Trends: [
+      { label: "Coloumn char", value: "Line" },
+      { label: "Area chart", value: "Line" },
+      { label: "Line chart", value: "Line" },
+    ],
+    Comparision: [
+      { label: "Line chart", value: "Line" },
+      { label: "Scatter plot", value: "Scatter" },
+    ],
   };
 
   const [state, setState] = useState(0);
@@ -128,28 +147,25 @@ export default function Homepage() {
 
     try {
       const res = await axios({
-        method: 'post',
-        url: 'https://daviz-backend-production.up.railway.app/api',
+        method: "post",
+        url: "https://daviz-backend-production.up.railway.app/api",
         data: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
       });
       setResponse(res.data.data);
-      setChartData(
-         {
-          ...res.data.data,
-          datasets: [
-            ...res.data.data.datasets.map((dataset, index) => ({
-              ...dataset,
-              borderColor: colors[index % colors.length],
-            })),
-          ],
-        }
-      );
+      setChartData({
+        ...res.data.data,
+        datasets: [
+          ...res.data.data.datasets.map((dataset, index) => ({
+            ...dataset,
+            borderColor: colors[index % colors.length],
+          })),
+        ],
+      });
       setAnalytics(res.data.analytics);
     } catch (error) {
       console.log(error);
     }
-    
 
     setState(1);
   };
@@ -175,7 +191,7 @@ export default function Homepage() {
   );
 
   const userTable = (
-    <div className=" w-11/12 text-center mr-5 h-[700px] overflow-y-auto flex justify-center text-center">
+    <div className=" w-11/12 mr-5 h-[700px] overflow-y-auto flex justify-center text-center">
       <div className="overflow-y-scroll snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around">
         <h1 className=" font-semibold">Table</h1>
         <List width={800} height={30} itemCount={1} itemSize={50}>
@@ -251,7 +267,15 @@ export default function Homepage() {
           </button>
         </div>
       </div>
-      <Linechart chartData={chartData} />
+      {
+        {
+          Line: <Linechart chartData={chartData} />,
+          Bar: <Barchart chartData={chartData} />,
+          Donought: <Donoughtchart chartData={chartData} />,
+          Pie: <Piechart chartData={chartData} />,
+          Scatter: <Scatterchart chartData={chartData} />,
+        }[userChartType]
+      }
     </div>
   );
 
@@ -263,12 +287,14 @@ export default function Homepage() {
             <th className="">{item.name}</th>
           </thead>
           <tbody>
-            {Object.keys(item).filter(key=>key!=='name').map((key) => (
-              <tr>
-                <td className="border border-black p-1">{key}</td>
-                <td className="border border-black p-1">{item[key]}</td>
-              </tr>
-            ))}
+            {Object.keys(item)
+              .filter((key) => key !== "name")
+              .map((key) => (
+                <tr>
+                  <td className="border border-black p-1">{key}</td>
+                  <td className="border border-black p-1">{item[key]}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
       ))}
@@ -339,29 +365,29 @@ export default function Homepage() {
                 {
                   composition: options.Composition.map((item, index) => {
                     return (
-                      <option value={item} key={index}>
-                        {item}
+                      <option value={item.value} key={index}>
+                        {item.label}
                       </option>
                     );
                   }),
                   distribution: options.Distribution.map((item, index) => {
                     return (
-                      <option value={item} key={index}>
-                        {item}
+                      <option value={item.value} key={index}>
+                        {item.label}
                       </option>
                     );
                   }),
                   comparision: options.Comparision.map((item, index) => {
                     return (
-                      <option value={item} key={index}>
-                        {item}
+                      <option value={item.value} key={index}>
+                        {item.label}
                       </option>
                     );
                   }),
                   trends: options.Trends.map((item, index) => {
                     return (
-                      <option value={item} key={index}>
-                        {item}
+                      <option value={item.value} key={index}>
+                        {item.label}
                       </option>
                     );
                   }),

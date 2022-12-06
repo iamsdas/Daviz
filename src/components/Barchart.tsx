@@ -1,10 +1,9 @@
-import { Line } from "react-chartjs-2";
-
-export default function Linechart({ chartData }) {
+import { Bar } from "react-chartjs-2";
+export default function BarChart({ chartData }) {
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Line Chart</h2>
-      <Line
+      <h2 style={{ textAlign: "center" }}>Bar Chart</h2>
+      <Bar
         data={chartData}
         options={{
           plugins: {
@@ -13,7 +12,7 @@ export default function Linechart({ chartData }) {
               // text: "example caption",
             },
             legend: {
-              position: "top",
+              display: false,
             },
             zoom: {
               pan: {
@@ -32,15 +31,6 @@ export default function Linechart({ chartData }) {
               },
             },
           },
-          // scales: {
-          //   x: {
-          //     display: true,
-          //   },
-          //   y: {
-          //     display: true,
-          //     type: "logarithmic",
-          //   },
-          // },
         }}
       />
     </div>

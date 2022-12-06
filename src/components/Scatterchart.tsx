@@ -1,10 +1,10 @@
-import { Line } from "react-chartjs-2";
+import { Scatter } from "react-chartjs-2";
 
-export default function Linechart({ chartData }) {
+export default function Scatterchart({ chartData }) {
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Line Chart</h2>
-      <Line
+      <h2 style={{ textAlign: "center" }}>Scatter Chart</h2>
+      <Scatter
         data={chartData}
         options={{
           plugins: {

@@ -1,10 +1,10 @@
-import { Line } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
-export default function Linechart({ chartData }) {
+export default function Donoughtchart({ chartData }) {
   return (
     <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Line Chart</h2>
-      <Line
+      <h2 style={{ textAlign: "center" }}>Donought Chart</h2>
+      <Doughnut
         data={chartData}
         options={{
           plugins: {
