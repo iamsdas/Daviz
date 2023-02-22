@@ -1,10 +1,10 @@
-import { Doughnut } from "react-chartjs-2";
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
 
-export default function Donoughtchart({ chartData }) {
+function PieChart({ chartData }: any) {
   return (
-    <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Donought Chart</h2>
-      <Doughnut
+    <div className='chart-container'>
+      <Pie
         data={chartData}
         options={{
           plugins: {
@@ -13,13 +13,13 @@ export default function Donoughtchart({ chartData }) {
               // text: "example caption",
             },
             legend: {
-              position: "top",
+              display: false,
             },
             zoom: {
               pan: {
                 enabled: true,
-                mode: "x",
-                modifierKey: "ctrl",
+                mode: 'x',
+                modifierKey: 'ctrl',
               },
               zoom: {
                 drag: {
@@ -28,21 +28,13 @@ export default function Donoughtchart({ chartData }) {
                 pinch: {
                   enabled: true,
                 },
-                mode: "x",
+                mode: 'x',
               },
             },
           },
-          // scales: {
-          //   x: {
-          //     display: true,
-          //   },
-          //   y: {
-          //     display: true,
-          //     type: "logarithmic",
-          //   },
-          // },
         }}
       />
     </div>
   );
 }
+export default PieChart;

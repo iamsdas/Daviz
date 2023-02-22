@@ -1,26 +1,27 @@
-import React from "react";
-import { Pie } from "react-chartjs-2";
+import { Line } from 'react-chartjs-2';
 
-function PieChart({ chartData }) {
+export default function Linechart({ chartData }: any) {
   return (
-    <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Pie Chart</h2>
-      <Pie
+    <div className='chart-container'>
+      <Line
         data={chartData}
         options={{
           plugins: {
+            decimation: {
+              enabled: true,
+            },
             title: {
               display: true,
               // text: "example caption",
             },
             legend: {
-              display: false,
+              position: 'top',
             },
             zoom: {
               pan: {
                 enabled: true,
-                mode: "x",
-                modifierKey: "ctrl",
+                mode: 'x',
+                modifierKey: 'shift',
               },
               zoom: {
                 drag: {
@@ -29,13 +30,21 @@ function PieChart({ chartData }) {
                 pinch: {
                   enabled: true,
                 },
-                mode: "x",
+                mode: 'x',
               },
             },
           },
+          // scales: {
+          //   x: {
+          //     display: true,
+          //   },
+          //   y: {
+          //     display: true,
+          //     type: "logarithmic",
+          //   },
+          // },
         }}
       />
     </div>
   );
 }
-export default PieChart;

@@ -1,9 +1,8 @@
-import { Scatter } from "react-chartjs-2";
+import { Scatter } from 'react-chartjs-2';
 
-export default function Scatterchart({ chartData }) {
+export default function Scatterchart({ chartData }: any) {
   return (
-    <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Scatter Chart</h2>
+    <div className='chart-container'>
       <Scatter
         data={chartData}
         options={{
@@ -18,8 +17,8 @@ export default function Scatterchart({ chartData }) {
             zoom: {
               pan: {
                 enabled: true,
-                mode: "x",
-                modifierKey: "ctrl",
+                mode: 'x',
+                modifierKey: 'ctrl',
               },
               zoom: {
                 drag: {
@@ -28,7 +27,7 @@ export default function Scatterchart({ chartData }) {
                 pinch: {
                   enabled: true,
                 },
-                mode: "x",
+                mode: 'x',
               },
             },
           },
