@@ -36,11 +36,25 @@ ChartJS.register(
 );
 
 interface Props {
-  chartData: any;
+  file: string;
   chartType: string;
+  minValue: string;
+  maxValue: string;
+  yAxis: string;
+  xAxis: string;
+  groupBy: string | null;
 }
 
-const Chart = ({ chartData, chartType }: Props) => {
+const chartData = {
+  labels: [],
+  datasets: [
+    {
+      data: [],
+    },
+  ],
+};
+
+const Chart = ({ chartType }: Props) => {
   const chartTypesObj = {
     Line: <Linechart chartData={chartData} />,
     Bar: <Barchart chartData={chartData} />,

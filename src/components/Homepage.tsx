@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import Chart from './Chart';
-import MultiSelect from 'react-select';
 import {
   Button,
   Select,
@@ -11,16 +10,6 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react';
-
-const colors = [
-  'rgb(255, 99, 132)',
-  'rgb(255, 159, 64)',
-  'rgb(255, 205, 86)',
-  'rgb(75, 192, 192)',
-  'rgb(54, 162, 235)',
-  'rgb(153, 102, 255)',
-  'rgb(201, 203, 207)',
-];
 
 const options = {
   Composition: [
@@ -43,24 +32,35 @@ const options = {
 };
 
 export default function Homepage() {
+  const [file, setFile] = useState<string>('');
+
   const [userPurpose, setUserPurpose] = useState<UserPurpose>('Comparision');
   const [chartType, setChartType] = useState<ChartType>('Bar');
   const [columns, setColumns] = useState<string[]>([]);
+
   const [xAxis, setXAxis] = useState<string>('');
-  const [yAxes, setYAxes] = useState<string[]>([]);
+  const [yAxis, setYAxes] = useState<string>('');
   const [groupBy, setGroupBy] = useState<string>('');
+
+  const [rows, setRows] = useState<string[]>([]);
+  const [minValue, setMinValue] = useState<string>('');
+  const [maxValue, setMaxValue] = useState<string>('');
+
+  const importData = () => {
+    setFile('');
+    setColumns([]);
+  };
 
   return (
     <div className=' w-full h-screen flex flex-row'>
       {/* left panel */}
       <div className=' w-1/5 bg-blue-gray-50 p-4 rounded-md h-full overflow-y-auto'>
         <h1 className=' text-left pl-5 font-bold font-mono text-3xl'>DaViz</h1>
-        <div className=' text-center mx-auto my-16 '>
-          <div>
-            <Button className='w-full'>import</Button>
-            <br />
-
-            <br />
+        <div className=' text-center mx-auto my-16'>
+          <div className=' space-y-6'>
+            <Button className='w-full' onClick={() => importData()}>
+              import
+            </Button>
 
             <Select
               label='Purpose'
@@ -68,52 +68,30 @@ export default function Homepage() {
               onChange={(e) => {
                 setUserPurpose(e as UserPurpose);
               }}>
-              <Option value='Comparision'>Comparision</Option>
-              <Option value='Distribution'>Distribution</Option>
-              <Option value='Composition'>Composition</Option>
-              <Option value='Trends'>Trends</Option>
+              {Object.keys(options).map((item, index) => (
+                <Option value={item} key={index}>
+                  {item}
+                </Option>
+              ))}
             </Select>
 
-            <br />
             <Select
               label='Select chart type'
+              value={chartType}
               onChange={(e) => setChartType(e as ChartType)}>
-              {
-                {
-                  Composition: options.Composition.map((item, index) => {
-                    return (
-                      <Option value={item.value} key={index}>
-                        {item.label}
-                      </Option>
-                    );
-                  }),
-                  Distribution: options.Distribution.map((item, index) => {
-                    return (
-                      <Option value={item.value} key={index}>
-                        {item.label}
-                      </Option>
-                    );
-                  }),
-                  Comparision: options.Comparision.map((item, index) => {
-                    return (
-                      <Option value={item.value} key={index}>
-                        {item.label}
-                      </Option>
-                    );
-                  }),
-                  Trends: options.Trends.map((item, index) => {
-                    return (
-                      <Option value={item.value} key={index}>
-                        {item.label}
-                      </Option>
-                    );
-                  }),
-                }[userPurpose]
-              }
+              {options[userPurpose].map((item, index) => {
+                return (
+                  <Option value={item.value} key={index}>
+                    {item.label}
+                  </Option>
+                );
+              })}
             </Select>
 
-            <br />
-            <Select label='Choose the x-axis'>
+            <Select
+              label='Choose the x-axis'
+              value={xAxis}
+              onChange={(res) => setXAxis(res as any)}>
               {columns.map((item, index) => (
                 <Option key={index} value={item}>
                   {item}
@@ -121,22 +99,18 @@ export default function Homepage() {
               ))}
             </Select>
 
-            <br />
+            <Select
+              label='Choose the y-axis'
+              value={yAxis}
+              onChange={(res) => setYAxes(res as any)}>
+              {columns.map((item, index) => (
+                <Option key={index} value={item}>
+                  {item}
+                </Option>
+              ))}
+            </Select>
 
-            <MultiSelect
-              options={columns}
-              className='!rounded-sm border-gray-200'
-              onChange={(e) =>
-                setYAxes(Array.isArray(e) ? e.map((hotel) => hotel.label) : [])
-              }
-              isMulti
-            />
-
-            <br />
-            <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
-              Choose the identifier (optional)
-            </label>
-            <Select label='Group by' onChange={(e) => setGroupBy(e)}>
+            <Select label='Group by' onChange={(e) => setGroupBy(e as any)}>
               {columns.map((item, index) => (
                 <Option key={index} value={item}>
                   {item}
@@ -157,14 +131,12 @@ export default function Homepage() {
           <TabsBody>
             <TabPanel value={'chart'}>
               <Chart
-                chartData={{
-                  labels: [],
-                  datasets: [
-                    {
-                      data: [],
-                    },
-                  ],
-                }}
+                file={file}
+                xAxis={xAxis}
+                yAxis={yAxis}
+                groupBy={groupBy}
+                minValue={''}
+                maxValue={''}
                 chartType={chartType}
               />
             </TabPanel>
