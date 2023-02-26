@@ -1,6 +1,16 @@
 import { useState } from 'react';
 import Chart from './Chart';
-import Select from 'react-select';
+import MultiSelect from 'react-select';
+import {
+  Button,
+  Select,
+  Option,
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from '@material-tailwind/react';
 
 const colors = [
   'rgb(255, 99, 132)',
@@ -43,93 +53,79 @@ export default function Homepage() {
   return (
     <div className=' w-full h-screen flex flex-row'>
       {/* left panel */}
-      <div className=' w-1/5 bg-slate-50 p-4 rounded-md h-full overflow-y-scroll'>
+      <div className=' w-1/5 bg-blue-gray-50 p-4 rounded-md h-full overflow-y-auto'>
         <h1 className=' text-left pl-5 font-bold font-mono text-3xl'>DaViz</h1>
         <div className=' text-center mx-auto my-16 '>
-          <form>
-            <button
-              className=' bg-green-400 hover:brightness-105 px-2 py-1 font-mono font-semibold text-xs rounded-md hover:scale-105'
-              onClick={(e) => {
-                // handleOnSubmit(e);
+          <div>
+            <Button className='w-full'>import</Button>
+            <br />
+
+            <br />
+
+            <Select
+              label='Purpose'
+              value={userPurpose}
+              onChange={(e) => {
+                setUserPurpose(e as UserPurpose);
               }}>
-              IMPORT CSV
-            </button>
-            <br />
+              <Option value='Comparision'>Comparision</Option>
+              <Option value='Distribution'>Distribution</Option>
+              <Option value='Composition'>Composition</Option>
+              <Option value='Trends'>Trends</Option>
+            </Select>
 
             <br />
-            <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
-              *Choose the purpose of Vizualization
-            </label>
-            <select
-              onChange={(e) => setUserPurpose(e.target.value as UserPurpose)}
-              className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'>
-              <option value='comparision'>Comparision</option>
-              <option value='distribution'>Distribution</option>
-              <option value='composition'>Composition</option>
-              <option value='trends'>Trends</option>
-            </select>
-
-            <br />
-            <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
-              *Choose the options from chart types
-            </label>
-            <select
-              onChange={(e) => setChartType(e.target.value as ChartType)}
-              className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'>
+            <Select
+              label='Select chart type'
+              onChange={(e) => setChartType(e as ChartType)}>
               {
                 {
                   Composition: options.Composition.map((item, index) => {
                     return (
-                      <option value={item.value} key={index}>
+                      <Option value={item.value} key={index}>
                         {item.label}
-                      </option>
+                      </Option>
                     );
                   }),
                   Distribution: options.Distribution.map((item, index) => {
                     return (
-                      <option value={item.value} key={index}>
+                      <Option value={item.value} key={index}>
                         {item.label}
-                      </option>
+                      </Option>
                     );
                   }),
                   Comparision: options.Comparision.map((item, index) => {
                     return (
-                      <option value={item.value} key={index}>
+                      <Option value={item.value} key={index}>
                         {item.label}
-                      </option>
+                      </Option>
                     );
                   }),
                   Trends: options.Trends.map((item, index) => {
                     return (
-                      <option value={item.value} key={index}>
+                      <Option value={item.value} key={index}>
                         {item.label}
-                      </option>
+                      </Option>
                     );
                   }),
                 }[userPurpose]
               }
-            </select>
+            </Select>
 
             <br />
-            <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
-              * Choose the x-axis
-            </label>
-            <select
-              onChange={(e) => setXAxis(e.target.value)}
-              className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'>
+            <Select label='Choose the x-axis'>
               {columns.map((item, index) => (
-                <option key={index} value={item}>
+                <Option key={index} value={item}>
                   {item}
-                </option>
+                </Option>
               ))}
-            </select>
+            </Select>
 
             <br />
-            <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
-              * Choose the y-axis
-            </label>
-            <Select
+
+            <MultiSelect
               options={columns}
+              className='!rounded-sm border-gray-200'
               onChange={(e) =>
                 setYAxes(Array.isArray(e) ? e.map((hotel) => hotel.label) : [])
               }
@@ -140,67 +136,47 @@ export default function Homepage() {
             <label className='block mb-2 pt-2 text-sm text-gray-900 font-semibold text-left'>
               Choose the identifier (optional)
             </label>
-            <select
-              onChange={(e) => setGroupBy(e.target.value)}
-              className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 '>
-              <option>select...</option>
+            <Select label='Group by' onChange={(e) => setGroupBy(e)}>
               {columns.map((item, index) => (
-                <option key={index} value={item}>
+                <Option key={index} value={item}>
                   {item}
-                </option>
+                </Option>
               ))}
-            </select>
-
-            <button className=' bg-green-400 hover:brightness-105 my-8 py-1 px-2 font-mono font-semibold text-sm rounded-md hover:scale-105'>
-              Send
-            </button>
-          </form>
+            </Select>
+          </div>
         </div>
       </div>
 
       {/* center panel */}
-      <div className='px-4 w-3/5 flex flex-col h-full items-start'>
-        <div className='flex flex-row justify-around flex-nowrap bg-grey w-4/5 mx-auto border-2 border-solid h-14 bg-slate-50 '></div>
-        <Chart
-          chartData={{
-            labels: [],
-            datasets: [
-              {
-                data: [],
-              },
-            ],
-          }}
-          chartType={chartType}></Chart>
-        <div className='flex flex-row justify-around gap-3 flex-nowrap bg-grey w-4/5 mx-auto border-2 border-solid h-20 bg-slate-50 p-3'>
-          <select
-            onChange={(e) => setXAxis(e.target.value)}
-            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2'>
-            <option disabled={true} value='' selected={true}>
-              min value
-            </option>
-            {columns.map((item, index) => (
-              <option key={index} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-          <select
-            onChange={(e) => setXAxis(e.target.value)}
-            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2'>
-            <option disabled={true} value='' selected={true}>
-              max value
-            </option>
-            {columns.map((item, index) => (
-              <option key={index} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div className='p-4 w-3/5 h-screen'>
+        <Tabs value='chart'>
+          <TabsHeader className='content-center'>
+            <Tab value='chart'>chart</Tab>
+            <Tab value='table'>table</Tab>
+          </TabsHeader>
+          <TabsBody>
+            <TabPanel value={'chart'}>
+              <Chart
+                chartData={{
+                  labels: [],
+                  datasets: [
+                    {
+                      data: [],
+                    },
+                  ],
+                }}
+                chartType={chartType}
+              />
+            </TabPanel>
+            <TabPanel value={'table'}>
+              <div>table</div>
+            </TabPanel>
+          </TabsBody>
+        </Tabs>
       </div>
 
       {/* right panel */}
-      <div className='w-1/5 bg-slate-50 h-full overflow-y-scroll p-4'></div>
+      <div className='w-1/5 bg-blue-gray-50 h-full overflow-y-scroll p-4'></div>
     </div>
   );
 }
