@@ -10,6 +10,8 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react';
+import { open } from '@tauri-apps/api/dialog';
+import { invoke } from '@tauri-apps/api/tauri';
 
 const options = {
   Composition: [
@@ -47,8 +49,17 @@ export default function Homepage() {
   const [maxValue, setMaxValue] = useState<string>('');
 
   const importData = () => {
-    setFile('');
-    setColumns([]);
+    open({
+      multiple: false,
+      filters: [{ name: 'csv', extensions: ['csv'] }],
+    }).then((fileName) => {
+      if (fileName) {
+        invoke('get_columns', { fileName }).then((columns) => {
+          setFile(fileName as string);
+          setColumns(columns as string[]);
+        });
+      }
+    });
   };
 
   return (
