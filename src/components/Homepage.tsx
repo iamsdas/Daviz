@@ -103,7 +103,7 @@ export default function Homepage() {
               ))}
             </Select>
 
-            <Select label='Group by' onChange={setGroupBy}>
+            <Select label='Group by' value={groupBy} onChange={setGroupBy}>
               {columns.map((item) => (
                 <Option key={item} value={item}>
                   {item}
