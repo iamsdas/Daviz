@@ -10,8 +10,7 @@ import {
   Tab,
   TabPanel,
 } from '@material-tailwind/react';
-import { open } from '@tauri-apps/api/dialog';
-import { invoke } from '@tauri-apps/api/tauri';
+import { openFile } from '../utils';
 
 const options = {
   Composition: [
@@ -24,7 +23,6 @@ const options = {
   ],
   Trends: [
     { label: 'Coloumn char', value: 'Bar' },
-    { label: 'Area chart', value: 'Line' },
     { label: 'Line chart', value: 'Line' },
   ],
   Comparision: [
@@ -40,25 +38,18 @@ export default function Homepage() {
   const [chartType, setChartType] = useState<ChartType>('Bar');
   const [columns, setColumns] = useState<string[]>([]);
 
-  const [xAxis, setXAxis] = useState<string>('');
-  const [yAxis, setYAxes] = useState<string>('');
-  const [groupBy, setGroupBy] = useState<string>('');
+  const [xAxis, setXAxis] = useState<string>();
+  const [yAxis, setYAxes] = useState<string>();
+  const [groupBy, setGroupBy] = useState<string>();
 
   const [rows, setRows] = useState<string[]>([]);
   const [minValue, setMinValue] = useState<string>('');
   const [maxValue, setMaxValue] = useState<string>('');
 
   const importData = () => {
-    open({
-      multiple: false,
-      filters: [{ name: 'csv', extensions: ['csv'] }],
-    }).then((fileName) => {
-      if (fileName) {
-        invoke('get_columns', { fileName }).then((columns) => {
-          setFile(fileName as string);
-          setColumns(columns as string[]);
-        });
-      }
+    openFile().then(([fileName, columnsOfFile]) => {
+      setFile(fileName);
+      setColumns(columnsOfFile);
     });
   };
 
@@ -76,9 +67,7 @@ export default function Homepage() {
             <Select
               label='Purpose'
               value={userPurpose}
-              onChange={(e) => {
-                setUserPurpose(e as UserPurpose);
-              }}>
+              onChange={setUserPurpose as any}>
               {Object.keys(options).map((item, index) => (
                 <Option value={item} key={index}>
                   {item}
@@ -88,7 +77,6 @@ export default function Homepage() {
 
             <Select
               label='Select chart type'
-              value={chartType}
               onChange={(e) => setChartType(e as ChartType)}>
               {options[userPurpose].map((item, index) => {
                 return (
@@ -99,10 +87,7 @@ export default function Homepage() {
               })}
             </Select>
 
-            <Select
-              label='Choose the x-axis'
-              value={xAxis}
-              onChange={(res) => setXAxis(res as any)}>
+            <Select label='Choose the x-axis' onChange={setXAxis}>
               {columns.map((item, index) => (
                 <Option key={index} value={item}>
                   {item}
@@ -110,20 +95,17 @@ export default function Homepage() {
               ))}
             </Select>
 
-            <Select
-              label='Choose the y-axis'
-              value={yAxis}
-              onChange={(res) => setYAxes(res as any)}>
-              {columns.map((item, index) => (
-                <Option key={index} value={item}>
+            <Select label='Choose the y-axis' onChange={setYAxes}>
+              {columns.map((item) => (
+                <Option key={item} value={item}>
                   {item}
                 </Option>
               ))}
             </Select>
 
-            <Select label='Group by' onChange={(e) => setGroupBy(e as any)}>
-              {columns.map((item, index) => (
-                <Option key={index} value={item}>
+            <Select label='Group by' onChange={setGroupBy}>
+              {columns.map((item) => (
+                <Option key={item} value={item}>
                   {item}
                 </Option>
               ))}

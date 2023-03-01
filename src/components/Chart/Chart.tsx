@@ -4,7 +4,7 @@ import Scatterchart from './Scatterchart';
 import Donoughtchart from './Donoughtchart';
 import Piechart from './Piechart';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -19,6 +19,7 @@ import {
   BarElement,
   LogarithmicScale,
 } from 'chart.js';
+import { getChartData } from '../../utils';
 
 ChartJS.register(
   CategoryScale,
@@ -40,12 +41,12 @@ interface Props {
   chartType: string;
   minValue: string;
   maxValue: string;
-  yAxis: string;
-  xAxis: string;
-  groupBy: string | null;
+  yAxis?: string;
+  xAxis?: string;
+  groupBy?: string;
 }
 
-const chartData = {
+const initialData = {
   labels: [],
   datasets: [
     {
@@ -54,7 +55,17 @@ const chartData = {
   ],
 };
 
-const Chart = ({ chartType }: Props) => {
+const Chart = ({ file, yAxis, xAxis, groupBy, chartType }: Props) => {
+  const [chartData, setChartData] = useState(initialData);
+
+  useEffect(() => {
+    if (file && yAxis && xAxis) {
+      getChartData(file, yAxis, xAxis, groupBy).then((data) => {
+        setChartData(data);
+      });
+    }
+  }, [file, yAxis, xAxis, groupBy]);
+
   const chartTypesObj = {
     Line: <Linechart chartData={chartData} />,
     Bar: <Barchart chartData={chartData} />,
@@ -70,4 +81,4 @@ const Chart = ({ chartType }: Props) => {
   );
 };
 
-export default memo(Chart);
+export default Chart;
