@@ -53,6 +53,12 @@ export default function Homepage() {
     });
   };
 
+  const clearParams = () => {
+    setXAxis(undefined);
+    setYAxes(undefined);
+    setGroupBy(undefined);
+  };
+
   return (
     <div className=' w-full h-screen flex flex-row'>
       {/* left panel */}
@@ -61,7 +67,7 @@ export default function Homepage() {
         <div className=' text-center mx-auto my-16'>
           <div className=' space-y-6'>
             <Button className='w-full' onClick={() => importData()}>
-              import
+              import dataset
             </Button>
 
             <Select
@@ -75,9 +81,7 @@ export default function Homepage() {
               ))}
             </Select>
 
-            <Select
-              label='Select chart type'
-              onChange={(e) => setChartType(e as ChartType)}>
+            <Select label='Select chart type' onChange={setChartType as any}>
               {options[userPurpose].map((item, index) => {
                 return (
                   <Option value={item.value} key={index}>
@@ -87,29 +91,45 @@ export default function Homepage() {
               })}
             </Select>
 
-            <Select label='Choose the x-axis' onChange={setXAxis}>
-              {columns.map((item, index) => (
-                <Option key={index} value={item}>
-                  {item}
-                </Option>
-              ))}
-            </Select>
+            {columns.length > 0 && (
+              <>
+                <Select
+                  label='Choose the x-axis'
+                  value={xAxis}
+                  onChange={setXAxis}>
+                  {columns.map((item, index) => (
+                    <Option key={index} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
 
-            <Select label='Choose the y-axis' onChange={setYAxes}>
-              {columns.map((item) => (
-                <Option key={item} value={item}>
-                  {item}
-                </Option>
-              ))}
-            </Select>
+                <Select
+                  label='Choose the y-axis'
+                  value={yAxis}
+                  onChange={setYAxes}>
+                  {columns.map((item) => (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
 
-            <Select label='Group by' value={groupBy} onChange={setGroupBy}>
-              {columns.map((item) => (
-                <Option key={item} value={item}>
-                  {item}
-                </Option>
-              ))}
-            </Select>
+                <Select label='Group by' value={groupBy} onChange={setGroupBy}>
+                  {columns.map((item) => (
+                    <Option key={item} value={item}>
+                      {item}
+                    </Option>
+                  ))}
+                </Select>
+                <Button
+                  color='blue-gray'
+                  onClick={clearParams}
+                  className='w-full'>
+                  Clear Params
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
