@@ -29,9 +29,9 @@ fn get_data_for_chart(
     let mut df: DataFrame = get_x_axis_frame(&lazy_df, &x_axis, offset, range);
 
     if let Some(group_by) = group_by {
-        let groups = get_unique_rows_of_column(&lazy_df, &group_by)[0..10].to_vec();
+        let groups = get_unique_rows_of_column(&lazy_df, &group_by);
 
-        for group in groups {
+        for group in groups.iter().take(10) {
             let group_df = lazy_df
                 .clone()
                 .filter(col(&group_by).eq(lit(group.as_str())))
