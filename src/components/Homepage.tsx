@@ -9,8 +9,9 @@ import {
   TabsBody,
   Tab,
   TabPanel,
+  Input,
 } from '@material-tailwind/react';
-import { openFile } from '../utils';
+import { getXAxis, openFile } from '../utils';
 
 const options = {
   Composition: [
@@ -43,8 +44,8 @@ export default function Homepage() {
   const [groupBy, setGroupBy] = useState<string>();
 
   const [rows, setRows] = useState<string[]>([]);
-  const [minValue, setMinValue] = useState<string>('');
-  const [maxValue, setMaxValue] = useState<string>('');
+  const [offset, setOffset] = useState<number>(0);
+  const [range, setRange] = useState<number>(10);
 
   const importData = () => {
     openFile().then(([fileName, columnsOfFile]) => {
@@ -57,6 +58,20 @@ export default function Homepage() {
     setXAxis(undefined);
     setYAxes(undefined);
     setGroupBy(undefined);
+    handleXAxisChange(undefined);
+  };
+
+  const handleXAxisChange = (value?: string) => {
+    setXAxis(value);
+    if (value) {
+      getXAxis(file, value).then((res) => {
+        setRows(res);
+        setRange(res.length);
+        setOffset(0);
+      });
+    } else {
+      setRows([]);
+    }
   };
 
   return (
@@ -96,7 +111,7 @@ export default function Homepage() {
                 <Select
                   label='Choose the x-axis'
                   value={xAxis}
-                  onChange={setXAxis}>
+                  onChange={handleXAxisChange}>
                   {columns.map((item, index) => (
                     <Option key={index} value={item}>
                       {item}
@@ -122,6 +137,24 @@ export default function Homepage() {
                     </Option>
                   ))}
                 </Select>
+
+                {rows.length > 0 && (
+                  <>
+                    <Input
+                      type='number'
+                      value={offset}
+                      onChange={(e) => setOffset(parseInt(e.target.value))}
+                      label='Offset'
+                    />
+                    <Input
+                      type='number'
+                      value={range}
+                      onChange={(e) => setRange(parseInt(e.target.value))}
+                      label='Range'
+                    />
+                  </>
+                )}
+
                 <Button
                   color='blue-gray'
                   onClick={clearParams}
@@ -148,8 +181,8 @@ export default function Homepage() {
                 xAxis={xAxis}
                 yAxis={yAxis}
                 groupBy={groupBy}
-                minValue={''}
-                maxValue={''}
+                offset={offset}
+                range={range}
                 chartType={chartType}
               />
             </TabPanel>

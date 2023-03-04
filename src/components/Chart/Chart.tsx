@@ -39,8 +39,8 @@ ChartJS.register(
 interface Props {
   file: string;
   chartType: string;
-  minValue: string;
-  maxValue: string;
+  offset?: number;
+  range?: number;
   yAxis?: string;
   xAxis?: string;
   groupBy?: string;
@@ -55,16 +55,24 @@ const initialData = {
   ],
 };
 
-const Chart = ({ file, yAxis, xAxis, groupBy, chartType }: Props) => {
+const Chart = ({
+  file,
+  yAxis,
+  xAxis,
+  groupBy,
+  chartType,
+  offset,
+  range,
+}: Props) => {
   const [chartData, setChartData] = useState(initialData);
 
   useEffect(() => {
     if (file && yAxis && xAxis) {
-      getChartData(file, yAxis, xAxis, groupBy).then((data) => {
+      getChartData(file, yAxis, xAxis, groupBy, offset, range).then((data) => {
         setChartData(data);
       });
     }
-  }, [file, yAxis, xAxis, groupBy]);
+  }, [file, yAxis, xAxis, groupBy, offset, range]);
 
   const chartTypesObj = {
     Line: <Linechart chartData={chartData} />,

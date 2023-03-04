@@ -11,6 +11,7 @@ export async function openFile(): Promise<[string, string[]]> {
 
   return [fileName as string, columns];
 }
+
 const colors = [
   'rgb(255, 99, 132)',
   'rgb(255, 159, 64)',
@@ -25,13 +26,17 @@ export async function getChartData(
   fileName: string,
   yAxis: string,
   xAxis: string,
-  groupBy?: string
+  groupBy?: string,
+  offset?: number,
+  range?: number
 ): Promise<any> {
   const data: string = await invoke('get_data_for_chart', {
     fileName,
     yAxis,
     xAxis,
     groupBy,
+    offset,
+    range,
   });
   const res = JSON.parse(data);
   console.log(res);
@@ -47,4 +52,11 @@ export async function getChartData(
   };
   // console.log(chartData);
   return chartData;
+}
+
+export async function getXAxis(
+  fileName: string,
+  column: string
+): Promise<string[]> {
+  return await invoke('get_rows', { fileName, column });
 }
