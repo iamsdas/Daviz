@@ -2,7 +2,7 @@ import { Doughnut } from 'react-chartjs-2';
 
 export default function Donoughtchart({ chartData }: any) {
   return (
-    <div className='chart-container'>
+    <div className='aspect-[2/1]'>
       <Doughnut
         data={chartData}
         options={{

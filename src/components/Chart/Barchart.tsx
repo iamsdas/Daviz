@@ -1,7 +1,7 @@
 import { Bar } from 'react-chartjs-2';
 export default function BarChart({ chartData }: any) {
   return (
-    <div className='chart-container'>
+    <div className='aspect-[2/1]'>
       <Bar
         data={chartData}
         options={{

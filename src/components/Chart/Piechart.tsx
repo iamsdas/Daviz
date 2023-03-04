@@ -3,7 +3,7 @@ import { Pie } from 'react-chartjs-2';
 
 function PieChart({ chartData }: any) {
   return (
-    <div className='chart-container'>
+    <div className='aspect-[2/1]'>
       <Pie
         data={chartData}
         options={{

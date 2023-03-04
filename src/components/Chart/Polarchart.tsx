@@ -1,8 +1,7 @@
-import { PolarArea } from "react-chartjs-2";
-export default function AreaChart({ chartData }) {
+import { PolarArea } from 'react-chartjs-2';
+export default function AreaChart({ chartData }: any) {
   return (
-    <div className="chart-container">
-      <h2 style={{ textAlign: "center" }}>Bar Chart</h2>
+    <div className='aspect-[2/1]'>
       <PolarArea
         data={chartData}
         options={{
@@ -17,8 +16,8 @@ export default function AreaChart({ chartData }) {
             zoom: {
               pan: {
                 enabled: true,
-                mode: "x",
-                modifierKey: "ctrl",
+                mode: 'x',
+                modifierKey: 'ctrl',
               },
               zoom: {
                 drag: {
@@ -27,7 +26,7 @@ export default function AreaChart({ chartData }) {
                 pinch: {
                   enabled: true,
                 },
-                mode: "x",
+                mode: 'x',
               },
             },
           },

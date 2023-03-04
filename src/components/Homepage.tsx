@@ -168,7 +168,7 @@ export default function Homepage() {
       </div>
 
       {/* center panel */}
-      <div className='p-4 w-3/5 h-screen'>
+      <div className='p-2 w-3/5 h-screen'>
         <Tabs value='chart'>
           <TabsHeader className='content-center'>
             <Tab value='chart'>chart</Tab>

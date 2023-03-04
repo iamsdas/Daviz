@@ -2,7 +2,7 @@ import { Scatter } from 'react-chartjs-2';
 
 export default function Scatterchart({ chartData }: any) {
   return (
-    <div className='chart-container'>
+    <div className='aspect-[2/1]'>
       <Scatter
         data={chartData}
         options={{

@@ -83,9 +83,7 @@ const Chart = ({
   };
 
   return (
-    <div className='w-full flex-grow align-middle my-5'>
-      {(chartTypesObj as any)[chartType] || null}
-    </div>
+    <div className='w-full'>{(chartTypesObj as any)[chartType] || null}</div>
   );
 };
 

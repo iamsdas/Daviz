@@ -2,7 +2,7 @@ import { Line } from 'react-chartjs-2';
 
 export default function Linechart({ chartData }: any) {
   return (
-    <div className='chart-container'>
+    <div className='aspect-[2/1]'>
       <Line
         data={chartData}
         options={{
