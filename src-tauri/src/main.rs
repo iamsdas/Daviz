@@ -54,6 +54,51 @@ fn get_data_for_chart(
     return serde_json::to_string_pretty(&df).unwrap();
 }
 
+#[tauri::command]
+fn get_data_for_table(
+    file_name: String,
+    x_axis: String,
+    y_axis: Option<String>,
+    group_by: Option<String>,
+    offset: Option<i64>,
+    range: Option<u32>,
+) -> String {
+    let lazy_df = get_frame_for_file(&file_name);
+    let mut df: DataFrame = get_x_axis_frame(&lazy_df, &x_axis, offset, range);
+
+    if let (Some(group_by), Some(y_axis)) = (group_by, y_axis) {
+        let groups = get_unique_rows_of_column(&lazy_df, &group_by);
+
+        for group in groups.iter().take(10) {
+            let group_df = lazy_df
+                .clone()
+                .filter(col(&group_by).eq(lit(group.as_str())))
+                .select([col(&x_axis).alias("x_axis"), col(&y_axis).alias(&group)])
+                .unique(Some(vec!["x_axis".to_string()]), UniqueKeepStrategy::First)
+                .collect()
+                .unwrap();
+            df = df.left_join(&group_df, ["x_axis"], ["x_axis"]).unwrap();
+        }
+    } else {
+        for column in get_columns(file_name) {
+            if column == x_axis {
+                continue;
+            }
+            let col_df = lazy_df
+                .clone()
+                .select([col(&x_axis).alias("x_axis"), col(&column).alias("y_axis")])
+                .unique(Some(vec!["x_axis".to_string()]), UniqueKeepStrategy::First)
+                .collect()
+                .unwrap();
+            df = df.left_join(&col_df, ["x_axis"], ["x_axis"]).unwrap();
+        }
+    }
+
+    df.rename("x_axis", &x_axis).unwrap();
+
+    return serde_json::to_string_pretty(&df).unwrap();
+}
+
 fn get_unique_rows_of_column(lazy_df: &LazyFrame, column: &String) -> Vec<String> {
     let unique_rows_df = lazy_df
         .clone()
@@ -115,7 +160,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_data_for_chart,
             get_columns,
-            get_rows
+            get_rows,
+            get_data_for_table
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

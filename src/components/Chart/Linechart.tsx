@@ -22,6 +22,9 @@ export default function Linechart({ chartData }: any) {
                 enabled: true,
                 mode: 'x',
                 modifierKey: 'shift',
+                onPanComplete: ({ chart }) => {
+                  console.log(chart.scales.x.min, chart.scales.x.max);
+                },
               },
               zoom: {
                 drag: {

@@ -39,7 +39,6 @@ export async function getChartData(
     range,
   });
   const res = JSON.parse(data);
-  console.log(res);
   const chartData = {
     labels: res.columns.find((c: any) => c.name === 'x_axis').values,
     datasets: res.columns
@@ -50,8 +49,43 @@ export async function getChartData(
         borderColor: colors[index % colors.length],
       })),
   };
-  // console.log(chartData);
   return chartData;
+}
+
+export async function getTableData(
+  fileName: string,
+  xAxis: string,
+  yAxis?: string,
+  groupBy?: string,
+  offset?: number,
+  range?: number
+): Promise<any> {
+  const data: string = await invoke('get_data_for_table', {
+    fileName,
+    yAxis,
+    xAxis,
+    groupBy,
+    offset,
+    range,
+  });
+  const res = JSON.parse(data);
+  const tableData: any[] = [];
+  const columns: any[] = [];
+  res.columns.forEach((c: any) => {
+    columns.push(c.name);
+    tableData[c.name] = c.values;
+  });
+  tableData.push(columns);
+  if (columns.length > 0) {
+    for (let i = 0; i < tableData[columns[0]].length; i++) {
+      const row: any[] = [];
+      columns.forEach((c: any) => {
+        row.push(tableData[c][i]);
+      });
+      tableData.push(row);
+    }
+  }
+  return tableData;
 }
 
 export async function getXAxis(

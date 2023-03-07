@@ -1,39 +1,49 @@
-import { FixedSizeList as List } from 'react-window';
+import { useEffect, useState } from 'react';
+import { FixedSizeGrid as List } from 'react-window';
+import { getChartData, getTableData } from '../utils';
 
 interface Props {
-  headerKeys: string[];
-  rows: any[];
+  file: string;
+  offset?: number;
+  range?: number;
+  yAxis?: string;
+  xAxis?: string;
+  groupBy?: string;
 }
 
-const Table = ({ headerKeys, rows }: Props) => {
-  const Header = ({ key, style }: any) => (
-    <th key={key} style={style}>
-      {headerKeys.map((key) => (
-        <td className=' border-2 border-solid text-center px-2 w-32 '>{key}</td>
-      ))}
-    </th>
-  );
+const Table = ({ file, offset, range, yAxis, xAxis, groupBy }: Props) => {
+  const [tableData, setTableData] = useState<any>({});
+  useEffect(() => {
+    if (file && yAxis && xAxis) {
+      getTableData(file, xAxis, yAxis, groupBy, offset, range).then((data) => {
+        setTableData(data);
+      });
+    }
+  }, [file, yAxis, xAxis, groupBy, offset, range]);
 
-  const Row = ({ index, style }: any) => (
-    <tr key={index} style={style}>
-      {Object.values(rows[index]).map((val) => (
-        <td className=' border-2 border-solid text-center px-2 w-32 '>
-          {val as string}
-        </td>
-      ))}
-    </tr>
+  const Cell = ({ columnIndex, rowIndex, style }: any) => (
+    <div
+      style={style}
+      className={`truncate border-r border-b  ${
+        rowIndex === 0 ? 'capitalize font-bold' : ''
+      }`}>
+      {tableData[rowIndex][columnIndex]}
+    </div>
   );
 
   return (
-    <div className=' w-11/12 mr-5 h-[700px] overflow-y-auto flex justify-center text-center'>
+    <div className=' w-full h-full flex justify-center text-center'>
       <div className='overflow-y-scroll snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around'>
         <h1 className=' font-semibold'>Table</h1>
         <table>
-          <List width={800} height={30} itemCount={1} itemSize={50}>
-            {Header}
-          </List>
-          <List width={800} height={600} itemCount={rows.length} itemSize={50}>
-            {Row}
+          <List
+            columnCount={tableData?.[0]?.length || 0}
+            columnWidth={120}
+            height={800}
+            rowCount={tableData?.length || 0}
+            rowHeight={35}
+            width={800}>
+            {Cell}
           </List>
         </table>
       </div>

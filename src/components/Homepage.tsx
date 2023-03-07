@@ -12,6 +12,7 @@ import {
   Input,
 } from '@material-tailwind/react';
 import { getXAxis, openFile } from '../utils';
+import Table from './Table';
 
 const options = {
   Composition: [
@@ -168,7 +169,7 @@ export default function Homepage() {
       </div>
 
       {/* center panel */}
-      <div className='p-2 w-3/5 h-screen'>
+      <div className='p-2 w-3/5 h-screen overflow-y-auto'>
         <Tabs value='chart'>
           <TabsHeader className='content-center'>
             <Tab value='chart'>chart</Tab>
@@ -187,7 +188,14 @@ export default function Homepage() {
               />
             </TabPanel>
             <TabPanel value={'table'}>
-              <div>table</div>
+              <Table
+                file={file}
+                xAxis={xAxis}
+                yAxis={yAxis}
+                groupBy={groupBy}
+                offset={offset}
+                range={range}
+              />
             </TabPanel>
           </TabsBody>
         </Tabs>
