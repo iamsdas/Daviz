@@ -86,7 +86,7 @@ fn get_data_for_table(
             }
             let col_df = lazy_df
                 .clone()
-                .select([col(&x_axis).alias("x_axis"), col(&column).alias("y_axis")])
+                .select([col(&x_axis).alias("x_axis"), col(&column)])
                 .unique(Some(vec!["x_axis".to_string()]), UniqueKeepStrategy::First)
                 .collect()
                 .unwrap();

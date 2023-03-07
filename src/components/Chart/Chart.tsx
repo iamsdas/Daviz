@@ -4,7 +4,7 @@ import Scatterchart from './Scatterchart';
 import Donoughtchart from './Donoughtchart';
 import Piechart from './Piechart';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -39,6 +39,9 @@ ChartJS.register(
 interface Props {
   file: string;
   chartType: string;
+  setOffset: (offset: number) => void;
+  setRange: (range: number) => void;
+  numRows: number;
   offset?: number;
   range?: number;
   yAxis?: string;
@@ -63,19 +66,41 @@ const Chart = ({
   chartType,
   offset,
   range,
+  numRows,
+  setOffset,
+  setRange,
 }: Props) => {
   const [chartData, setChartData] = useState(initialData);
+  const chartRef = useRef<any>(null);
+
+  const chartFetchCB = ({ chart }: any) => {
+    const { min, max } = chart.scales.x;
+    if (min > 0 && max >= min) {
+      setOffset(min);
+      setRange(max - min + 1);
+    }
+    console.log(min, max);
+  };
 
   useEffect(() => {
     if (file && yAxis && xAxis) {
       getChartData(file, yAxis, xAxis, groupBy, offset, range).then((data) => {
         setChartData(data);
+        if (chartRef.current) {
+          chartRef.current.resetZoom();
+        }
       });
     }
   }, [file, yAxis, xAxis, groupBy, offset, range]);
 
   const chartTypesObj = {
-    Line: <Linechart chartData={chartData} />,
+    Line: (
+      <Linechart
+        chartData={chartData}
+        chartFetchCB={chartFetchCB}
+        chartRef={chartRef}
+      />
+    ),
     Bar: <Barchart chartData={chartData} />,
     Donought: <Donoughtchart chartData={chartData} />,
     Pie: <Piechart chartData={chartData} />,
@@ -83,7 +108,20 @@ const Chart = ({
   };
 
   return (
-    <div className='w-full'>{(chartTypesObj as any)[chartType] || null}</div>
+    <>
+      <div className='w-full'>{(chartTypesObj as any)[chartType] || null}</div>
+      <button
+        onClick={() => {
+          console.log(chartRef);
+          if (chartRef.current) {
+            chartRef.current.resetZoom();
+          }
+          setOffset(0);
+          setRange(numRows);
+        }}>
+        resetZoom
+      </button>
+    </>
   );
 };
 

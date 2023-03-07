@@ -1,9 +1,11 @@
+import { useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 
-export default function Linechart({ chartData }: any) {
+export default function Linechart({ chartData, chartFetchCB, chartRef }: any) {
   return (
     <div className='aspect-[2/1]'>
       <Line
+        ref={chartRef}
         data={chartData}
         options={{
           plugins: {
@@ -22,9 +24,6 @@ export default function Linechart({ chartData }: any) {
                 enabled: true,
                 mode: 'x',
                 modifierKey: 'shift',
-                onPanComplete: ({ chart }) => {
-                  console.log(chart.scales.x.min, chart.scales.x.max);
-                },
               },
               zoom: {
                 drag: {
@@ -34,6 +33,7 @@ export default function Linechart({ chartData }: any) {
                   enabled: true,
                 },
                 mode: 'x',
+                onZoomComplete: chartFetchCB,
               },
             },
           },

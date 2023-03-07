@@ -185,6 +185,9 @@ export default function Homepage() {
                 offset={offset}
                 range={range}
                 chartType={chartType}
+                setOffset={setOffset}
+                setRange={setRange}
+                numRows={rows.length}
               />
             </TabPanel>
             <TabPanel value={'table'}>
