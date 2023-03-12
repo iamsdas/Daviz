@@ -79,16 +79,16 @@ const Chart = ({
       setOffset(min);
       setRange(max - min + 1);
     }
-    console.log(min, max);
   };
 
   useEffect(() => {
     if (file && yAxis && xAxis) {
       getChartData(file, yAxis, xAxis, groupBy, offset, range).then((data) => {
-        setChartData(data);
         if (chartRef.current) {
           chartRef.current.resetZoom();
+          chartRef.current.stop();
         }
+        setChartData(data);
       });
     }
   }, [file, yAxis, xAxis, groupBy, offset, range]);

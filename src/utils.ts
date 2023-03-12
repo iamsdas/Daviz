@@ -128,3 +128,13 @@ export async function getXAxis(
 ): Promise<string[]> {
   return await invoke('get_rows', { fileName, column });
 }
+
+export function debouncedCallBack(fn: (arg: any) => void, delay: any) {
+  let timer: NodeJS.Timeout;
+  return (arg: any) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(arg);
+    }, delay);
+  };
+}

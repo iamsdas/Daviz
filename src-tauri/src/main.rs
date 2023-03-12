@@ -165,24 +165,19 @@ fn get_unique_rows_of_column(lazy_df: &LazyFrame, column: &String) -> Vec<String
     let unique_rows_df = lazy_df
         .clone()
         .select([col(column)])
-        .sort(
-            column,
-            SortOptions {
-                descending: false,
-                nulls_last: true,
-                multithreaded: true,
-            },
-        )
         .unique(None, UniqueKeepStrategy::First)
         .collect()
         .unwrap();
 
-    return unique_rows_df[column.as_str()]
+    let mut row_vec = unique_rows_df[column.as_str()]
         .utf8()
         .unwrap()
         .into_iter()
         .map(|x| x.unwrap().to_string())
         .collect::<Vec<String>>();
+
+    row_vec.sort();
+    return row_vec;
 }
 
 fn get_frame_for_file(file_name: &String) -> LazyFrame {

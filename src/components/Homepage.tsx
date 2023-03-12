@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Chart from './Chart';
 import {
   Button,
@@ -11,7 +11,7 @@ import {
   TabPanel,
   Input,
 } from '@material-tailwind/react';
-import { getXAxis, openFile } from '../utils';
+import { getXAxis, openFile, debouncedCallBack } from '../utils';
 import Table from './Table';
 import Analytics from './Analytics';
 
@@ -48,6 +48,9 @@ export default function Homepage() {
   const [rows, setRows] = useState<string[]>([]);
   const [offset, setOffset] = useState<number>(0);
   const [range, setRange] = useState<number>(10);
+
+  const debouncedSetRange = useCallback(debouncedCallBack(setRange, 500), []);
+  const debouncedSetOffset = useCallback(debouncedCallBack(setOffset, 500), []);
 
   const importData = () => {
     openFile().then(([fileName, columnsOfFile]) => {
@@ -145,13 +148,17 @@ export default function Homepage() {
                     <Input
                       type='number'
                       value={offset}
-                      onChange={(e) => setOffset(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        debouncedSetOffset(parseInt(e.target.value))
+                      }
                       label='Offset'
                     />
                     <Input
                       type='number'
                       value={range}
-                      onChange={(e) => setRange(parseInt(e.target.value))}
+                      onChange={(e) =>
+                        debouncedSetRange(parseInt(e.target.value))
+                      }
                       label='Range'
                     />
                   </>
@@ -186,8 +193,8 @@ export default function Homepage() {
                 offset={offset}
                 range={range}
                 chartType={chartType}
-                setOffset={setOffset}
-                setRange={setRange}
+                setOffset={debouncedSetOffset}
+                setRange={debouncedSetRange}
                 numRows={rows.length}
               />
             </TabPanel>
