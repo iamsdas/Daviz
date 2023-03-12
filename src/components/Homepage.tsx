@@ -13,6 +13,7 @@ import {
 } from '@material-tailwind/react';
 import { getXAxis, openFile } from '../utils';
 import Table from './Table';
+import Analytics from './Analytics';
 
 const options = {
   Composition: [
@@ -205,7 +206,16 @@ export default function Homepage() {
       </div>
 
       {/* right panel */}
-      <div className='w-1/5 bg-blue-gray-50 h-full overflow-y-scroll p-4'></div>
+      <div className='w-1/5 bg-blue-gray-50 h-full overflow-y-auto p-8'>
+        <Analytics
+          file={file}
+          xAxis={xAxis}
+          yAxis={yAxis}
+          groupBy={groupBy}
+          offset={offset}
+          range={range}
+        />
+      </div>
     </div>
   );
 }

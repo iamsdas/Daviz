@@ -59,7 +59,7 @@ export async function getTableData(
   groupBy?: string,
   offset?: number,
   range?: number
-): Promise<any> {
+): Promise<any[][]> {
   const data: string = await invoke('get_data_for_table', {
     fileName,
     yAxis,
@@ -86,6 +86,40 @@ export async function getTableData(
     }
   }
   return tableData;
+}
+
+export async function getAnalyticsData(
+  fileName: string,
+  xAxis: string,
+  yAxis?: string,
+  groupBy?: string,
+  offset?: number,
+  range?: number
+): Promise<any[]> {
+  const data: any[] = await invoke('get_data_for_analytics', {
+    fileName,
+    yAxis,
+    xAxis,
+    groupBy,
+    offset,
+    range,
+  });
+  const res: any = [];
+  data.forEach(([column, json]) => {
+    const data = JSON.parse(json);
+    const curr: any = {};
+    curr['name'] = column;
+    curr['data'] = data.columns
+      .map((c: any) => {
+        return {
+          name: c.name,
+          data: c.values[0],
+        };
+      })
+      .filter((c: any) => c.data !== null);
+    res.push(curr);
+  });
+  return res;
 }
 
 export async function getXAxis(
