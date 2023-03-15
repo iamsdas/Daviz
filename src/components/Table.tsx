@@ -33,7 +33,7 @@ const Table = ({ file, offset, range, yAxis, xAxis, groupBy }: Props) => {
 
   return (
     <div className=' w-full h-full flex justify-center text-center'>
-      <div className='overflow-y-scroll snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around'>
+      <div className='overflow-y-auto snap snap-y snap-mandatory flex flex-col flex-wrap hide-scroll-bar justify-around'>
         <h1 className=' font-semibold'>Table</h1>
         <table>
           <List
@@ -42,7 +42,7 @@ const Table = ({ file, offset, range, yAxis, xAxis, groupBy }: Props) => {
             height={800}
             rowCount={tableData?.length || 0}
             rowHeight={35}
-            width={800}>
+            width={1200}>
             {Cell}
           </List>
         </table>

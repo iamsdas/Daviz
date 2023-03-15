@@ -1,10 +1,11 @@
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
 
-function PieChart({ chartData }: any) {
+function PieChart({ chartData, chartFetchCB, chartRef }: any) {
   return (
     <div className='aspect-[2/1]'>
       <Pie
+        ref={chartRef}
         data={chartData}
         options={{
           plugins: {
@@ -19,7 +20,7 @@ function PieChart({ chartData }: any) {
               pan: {
                 enabled: true,
                 mode: 'x',
-                modifierKey: 'ctrl',
+                modifierKey: 'shift',
               },
               zoom: {
                 drag: {
@@ -29,6 +30,7 @@ function PieChart({ chartData }: any) {
                   enabled: true,
                 },
                 mode: 'x',
+                onZoomComplete: chartFetchCB,
               },
             },
           },

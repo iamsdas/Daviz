@@ -1,15 +1,19 @@
 import { Scatter } from 'react-chartjs-2';
 
-export default function Scatterchart({ chartData }: any) {
+export default function Scatterchart({
+  chartData,
+  chartFetchCB,
+  chartRef,
+}: any) {
   return (
     <div className='aspect-[2/1]'>
       <Scatter
+        ref={chartRef}
         data={chartData}
         options={{
           plugins: {
             title: {
               display: true,
-              // text: "example caption",
             },
             // legend: {
             //   position: "top",
@@ -18,7 +22,7 @@ export default function Scatterchart({ chartData }: any) {
               pan: {
                 enabled: true,
                 mode: 'x',
-                modifierKey: 'ctrl',
+                modifierKey: 'shift',
               },
               zoom: {
                 drag: {
@@ -28,6 +32,7 @@ export default function Scatterchart({ chartData }: any) {
                   enabled: true,
                 },
                 mode: 'x',
+                onZoomComplete: chartFetchCB,
               },
             },
           },

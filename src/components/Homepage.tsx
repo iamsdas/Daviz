@@ -54,6 +54,7 @@ export default function Homepage() {
 
   const importData = () => {
     openFile().then(([fileName, columnsOfFile]) => {
+      clearParams();
       setFile(fileName);
       setColumns(columnsOfFile);
     });

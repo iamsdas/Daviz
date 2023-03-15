@@ -1,8 +1,9 @@
 import { Bar } from 'react-chartjs-2';
-export default function BarChart({ chartData }: any) {
+export default function BarChart({ chartData, chartFetchCB, chartRef }: any) {
   return (
     <div className='aspect-[2/1]'>
       <Bar
+        ref={chartRef}
         data={chartData}
         options={{
           plugins: {
@@ -16,13 +17,17 @@ export default function BarChart({ chartData }: any) {
               pan: {
                 enabled: true,
                 mode: 'x',
-                modifierKey: 'ctrl',
+                modifierKey: 'shift',
               },
               zoom: {
                 drag: {
                   enabled: true,
                 },
+                pinch: {
+                  enabled: true,
+                },
                 mode: 'x',
+                onZoomComplete: chartFetchCB,
               },
             },
           },

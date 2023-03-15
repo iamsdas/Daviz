@@ -4,7 +4,7 @@ import Scatterchart from './Scatterchart';
 import Donoughtchart from './Donoughtchart';
 import Piechart from './Piechart';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { memo, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -101,10 +101,34 @@ const Chart = ({
         chartRef={chartRef}
       />
     ),
-    Bar: <Barchart chartData={chartData} />,
-    Donought: <Donoughtchart chartData={chartData} />,
-    Pie: <Piechart chartData={chartData} />,
-    Scatter: <Scatterchart chartData={chartData} />,
+    Bar: (
+      <Barchart
+        chartData={chartData}
+        chartFetchCB={chartFetchCB}
+        chartRef={chartRef}
+      />
+    ),
+    Donought: (
+      <Donoughtchart
+        chartData={chartData}
+        chartFetchCB={chartFetchCB}
+        chartRef={chartRef}
+      />
+    ),
+    Pie: (
+      <Piechart
+        chartData={chartData}
+        chartFetchCB={chartFetchCB}
+        chartRef={chartRef}
+      />
+    ),
+    Scatter: (
+      <Scatterchart
+        chartData={chartData}
+        chartFetchCB={chartFetchCB}
+        chartRef={chartRef}
+      />
+    ),
   };
 
   return (
