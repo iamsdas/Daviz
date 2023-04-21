@@ -1,11 +1,11 @@
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
 
-function PieChart({ chartData, chartFetchCB, chartRef }: any) {
+function PieChart({ chartData }: any) {
   return (
     <div className='aspect-[2/1]'>
       <Pie
-        ref={chartRef}
+        // ref={chartRef}
         data={chartData}
         options={{
           plugins: {
@@ -14,25 +14,25 @@ function PieChart({ chartData, chartFetchCB, chartRef }: any) {
               // text: "example caption",
             },
             legend: {
-              display: false,
+              position: 'top',
             },
-            zoom: {
-              pan: {
-                enabled: true,
-                mode: 'x',
-                modifierKey: 'shift',
-              },
-              zoom: {
-                drag: {
-                  enabled: true,
-                },
-                pinch: {
-                  enabled: true,
-                },
-                mode: 'x',
-                onZoomComplete: chartFetchCB,
-              },
-            },
+            // zoom: {
+            //   pan: {
+            //     enabled: true,
+            //     mode: 'x',
+            //     modifierKey: 'shift',
+            //   },
+            //   zoom: {
+            //     drag: {
+            //       enabled: true,
+            //     },
+            //     pinch: {
+            //       enabled: true,
+            //     },
+            //     mode: 'x',
+            //     onZoomComplete: chartFetchCB,
+            //   },
+            // },
           },
         }}
       />

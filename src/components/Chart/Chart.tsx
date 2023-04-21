@@ -19,7 +19,7 @@ import {
   BarElement,
   LogarithmicScale,
 } from 'chart.js';
-import { getChartData } from '../../utils';
+import { colors, getChartData } from '../../utils';
 
 ChartJS.register(
   CategoryScale,
@@ -88,6 +88,18 @@ const Chart = ({
           chartRef.current.resetZoom();
           chartRef.current.stop();
         }
+        if (
+          chartType === 'Pie' ||
+          chartType === 'Donought'
+          // chartType === 'Bar'
+        ) {
+          data.datasets.forEach((dataset: any) => {
+            dataset.backgroundColor = (dataset.data as any[]).map(
+              (_, index) => colors[index % colors.length]
+            );
+          });
+        }
+        console.log('cd', data);
         setChartData(data);
       });
     }
@@ -108,20 +120,8 @@ const Chart = ({
         chartRef={chartRef}
       />
     ),
-    Donought: (
-      <Donoughtchart
-        chartData={chartData}
-        chartFetchCB={chartFetchCB}
-        chartRef={chartRef}
-      />
-    ),
-    Pie: (
-      <Piechart
-        chartData={chartData}
-        chartFetchCB={chartFetchCB}
-        chartRef={chartRef}
-      />
-    ),
+    Donought: <Donoughtchart chartData={chartData} />,
+    Pie: <Piechart chartData={chartData} />,
     Scatter: (
       <Scatterchart
         chartData={chartData}

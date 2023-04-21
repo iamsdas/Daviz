@@ -12,7 +12,7 @@ export async function openFile(): Promise<[string, string[]]> {
   return [fileName as string, columns];
 }
 
-const colors = [
+export const colors = [
   'rgb(255, 99, 132)',
   'rgb(255, 159, 64)',
   'rgb(255, 205, 86)',

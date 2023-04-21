@@ -18,7 +18,7 @@ import Analytics from './Analytics';
 const options = {
   Composition: [
     { label: 'Pie chart', value: 'Pie' },
-    { label: 'Doughnut chart', value: 'Doughnut' },
+    { label: 'Donought chart', value: 'Donought' },
   ],
   Distribution: [
     { label: 'Bar chart (Histogram)', value: 'Bar' },
