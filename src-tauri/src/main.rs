@@ -169,12 +169,10 @@ fn get_unique_rows_of_column(lazy_df: &LazyFrame, column: &String) -> Vec<String
         .collect()
         .unwrap();
 
-    let mut row_vec = unique_rows_df[column.as_str()]
-        .utf8()
-        .unwrap()
-        .into_iter()
-        .map(|x| x.unwrap().to_string())
-        .collect::<Vec<String>>();
+    let mut row_vec = unique_rows_df[column.as_str()] // iteratte on rows of column
+        .iter()
+        .map(|x| x.to_string()) // convert into Option<String>
+        .collect::<Vec<String>>(); // convert into Vec<String>
 
     row_vec.sort();
     return row_vec;
