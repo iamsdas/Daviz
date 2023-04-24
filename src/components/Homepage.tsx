@@ -10,6 +10,7 @@ import {
   Tab,
   TabPanel,
   Input,
+  Textarea,
 } from '@material-tailwind/react';
 import { getXAxis, openFile, debouncedCallBack } from '../utils';
 import Table from './Table';
@@ -37,7 +38,7 @@ const options = {
 export default function Homepage() {
   const [file, setFile] = useState<string>('');
 
-  const [userPurpose, setUserPurpose] = useState<UserPurpose>('Comparision');
+  const [userPurpose, setUserPurpose] = useState<UserPurpose>();
   const [chartType, setChartType] = useState<ChartType>('Bar');
   const [columns, setColumns] = useState<string[]>([]);
 
@@ -80,6 +81,43 @@ export default function Homepage() {
     }
   };
 
+  const extractText = (text: string) => {
+    alert(text);
+    const words = text.split(' ');
+    const chartType = words.find((word) =>
+      ['Line', 'Bar', 'Pie', 'Scatter', 'Doughnut'].includes(word)
+    );
+    if (chartType) {
+      switch (chartType) {
+        case 'Line':
+          setUserPurpose('Trends');
+          break;
+        case 'Bar':
+          setUserPurpose('Distribution');
+          break;
+        case 'Pie':
+          setUserPurpose('Composition');
+          break;
+        case 'Scatter':
+          setUserPurpose('Comparision');
+          break;
+        case 'Doughnut':
+          setUserPurpose('Composition');
+          break;
+      }
+      setChartType(chartType as ChartType);
+    }
+    const cols: string[] = words.filter((word) => columns.includes(word));
+    if (cols.length > 0) {
+      const xAxis = cols[0];
+      handleXAxisChange(xAxis);
+    }
+    if (cols.length > 1) {
+      const yAxis = cols[1];
+      setYAxes(yAxis);
+    }
+  };
+
   return (
     <div className=' w-full h-screen flex flex-row'>
       {/* left panel */}
@@ -91,26 +129,32 @@ export default function Homepage() {
               import dataset
             </Button>
 
-            <Select
-              label='Purpose'
-              value={userPurpose}
-              onChange={setUserPurpose as any}>
-              {Object.keys(options).map((item, index) => (
-                <Option value={item} key={index}>
-                  {item}
-                </Option>
-              ))}
-            </Select>
-
-            <Select label='Select chart type' onChange={setChartType as any}>
-              {options[userPurpose].map((item, index) => {
-                return (
-                  <Option value={item.value} key={index}>
-                    {item.label}
+            {options && (
+              <Select
+                label='Purpose'
+                value={userPurpose}
+                onChange={setUserPurpose as any}>
+                {Object.keys(options).map((item, index) => (
+                  <Option value={item} key={index}>
+                    {item}
                   </Option>
-                );
-              })}
-            </Select>
+                ))}
+              </Select>
+            )}
+            {userPurpose && (
+              <Select
+                label='Select chart type'
+                value={chartType}
+                onChange={setChartType as any}>
+                {options[userPurpose].map((item, index) => {
+                  return (
+                    <Option value={item.value} key={index}>
+                      {item.label}
+                    </Option>
+                  );
+                })}
+              </Select>
+            )}
 
             {columns.length > 0 && (
               <>
@@ -178,39 +222,49 @@ export default function Homepage() {
       </div>
 
       {/* center panel */}
-      <div className='p-2 w-3/5 h-screen overflow-y-auto'>
-        <Tabs value='chart'>
-          <TabsHeader className='content-center'>
-            <Tab value='chart'>chart</Tab>
-            <Tab value='table'>table</Tab>
-          </TabsHeader>
-          <TabsBody>
-            <TabPanel value={'chart'}>
-              <Chart
-                file={file}
-                xAxis={xAxis}
-                yAxis={yAxis}
-                groupBy={groupBy}
-                offset={offset}
-                range={range}
-                chartType={chartType}
-                setOffset={debouncedSetOffset}
-                setRange={debouncedSetRange}
-                numRows={rows.length}
-              />
-            </TabPanel>
-            <TabPanel value={'table'}>
-              <Table
-                file={file}
-                xAxis={xAxis}
-                yAxis={yAxis}
-                groupBy={groupBy}
-                offset={offset}
-                range={range}
-              />
-            </TabPanel>
-          </TabsBody>
-        </Tabs>
+      <div className='p-2 w-3/5 h-screen overflow-y-auto flex flex-col'>
+        <div className='flex-grow'>
+          <Tabs value='chart'>
+            <TabsHeader className='content-center'>
+              <Tab value='chart'>chart</Tab>
+              <Tab value='table'>table</Tab>
+            </TabsHeader>
+            <TabsBody>
+              <TabPanel value={'chart'}>
+                <Chart
+                  file={file}
+                  xAxis={xAxis}
+                  yAxis={yAxis}
+                  groupBy={groupBy}
+                  offset={offset}
+                  range={range}
+                  chartType={chartType}
+                  setOffset={debouncedSetOffset}
+                  setRange={debouncedSetRange}
+                  numRows={rows.length}
+                />
+              </TabPanel>
+              <TabPanel value={'table'}>
+                <Table
+                  file={file}
+                  xAxis={xAxis}
+                  yAxis={yAxis}
+                  groupBy={groupBy}
+                  offset={offset}
+                  range={range}
+                />
+              </TabPanel>
+            </TabsBody>
+          </Tabs>
+        </div>
+        <div className='w-full flex-shrink'>
+          <Textarea
+            label='Describe your data'
+            onChange={(e) => {
+              extractText(e.target.value);
+            }}
+          />
+        </div>
       </div>
 
       {/* right panel */}
