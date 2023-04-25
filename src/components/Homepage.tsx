@@ -208,7 +208,6 @@ export default function Homepage() {
                     />
                   </>
                 )}
-
                 <Button
                   color='blue-gray'
                   onClick={clearParams}

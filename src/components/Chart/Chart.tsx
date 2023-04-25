@@ -20,6 +20,7 @@ import {
   LogarithmicScale,
 } from 'chart.js';
 import { colors, getChartData } from '../../utils';
+import { Button } from '@material-tailwind/react';
 
 ChartJS.register(
   CategoryScale,
@@ -70,15 +71,48 @@ const Chart = ({
   setOffset,
   setRange,
 }: Props) => {
-  const [chartData, setChartData] = useState(initialData);
+  const [chartData, setChartData] = useState<any>(initialData);
   const chartRef = useRef<any>(null);
 
   const chartFetchCB = ({ chart }: any) => {
-    const { min, max } = chart.scales.x;
-    if (min > 0 && max >= min) {
-      setOffset(min);
-      setRange(max - min + 1);
-    }
+    // const { min, max } = chart.scales.x;
+    // if (min > 0 && max >= min) {
+    //   setOffset(min);
+    //   setRange(max - min + 1);
+    // }
+  };
+
+  const predictData = async () => {
+    const data = chartData.datasets[0].data;
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ series: data }),
+    };
+    const resp = await fetch(
+      'http://localhost:8000/api/predict',
+      requestOptions
+    );
+    const predictedData = await resp.json();
+    const newData = Array(data.length).fill(null).concat(predictedData);
+    const datasets = chartData.datasets.map((dataset: any) => {
+      return {
+        ...dataset,
+        data: dataset.data.concat(Array(predictedData.length).fill(null)),
+      };
+    });
+    datasets.push({
+      data: newData,
+      label: 'Predicted',
+      borderColor: 'rgb(255,255,0)',
+    });
+    const labels = chartData.labels.concat(
+      Array(predictedData.length).fill('')
+    );
+    setChartData({
+      labels,
+      datasets,
+    });
   };
 
   useEffect(() => {
@@ -134,7 +168,8 @@ const Chart = ({
   return (
     <>
       <div className='w-full'>{(chartTypesObj as any)[chartType] || null}</div>
-      <button
+      <Button
+        color='blue-gray'
         onClick={() => {
           console.log(chartRef);
           if (chartRef.current) {
@@ -144,7 +179,12 @@ const Chart = ({
           setRange(numRows);
         }}>
         resetZoom
-      </button>
+      </Button>
+      {chartType === 'Line' && (
+        <Button color='orange' onClick={predictData} className='m-2'>
+          Predict Data
+        </Button>
+      )}
     </>
   );
 };
