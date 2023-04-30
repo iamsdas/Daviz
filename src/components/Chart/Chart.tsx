@@ -72,6 +72,7 @@ const Chart = ({
   setRange,
 }: Props) => {
   const [chartData, setChartData] = useState<any>(initialData);
+  const [p, setP] = useState<any>(null);
   const chartRef = useRef<any>(null);
 
   const chartFetchCB = ({ chart }: any) => {
@@ -117,25 +118,27 @@ const Chart = ({
 
   useEffect(() => {
     if (file && yAxis && xAxis) {
-      getChartData(file, yAxis, xAxis, groupBy, offset, range).then((data) => {
-        if (chartRef.current) {
-          chartRef.current.resetZoom();
-          chartRef.current.stop();
+      getChartData(file, yAxis, xAxis, groupBy, offset, range).then(
+        ([data, time]) => {
+          if (chartRef.current) {
+            chartRef.current.resetZoom();
+            chartRef.current.stop();
+          }
+          setP(time);
+          if (
+            chartType === 'Pie' ||
+            chartType === 'Donought'
+            // chartType === 'Bar'
+          ) {
+            data.datasets.forEach((dataset: any) => {
+              dataset.backgroundColor = (dataset.data as any[]).map(
+                (_, index) => colors[index % colors.length]
+              );
+            });
+          }
+          setChartData(data);
         }
-        if (
-          chartType === 'Pie' ||
-          chartType === 'Donought'
-          // chartType === 'Bar'
-        ) {
-          data.datasets.forEach((dataset: any) => {
-            dataset.backgroundColor = (dataset.data as any[]).map(
-              (_, index) => colors[index % colors.length]
-            );
-          });
-        }
-        console.log('cd', data);
-        setChartData(data);
-      });
+      );
     }
   }, [file, yAxis, xAxis, groupBy, offset, range]);
 
@@ -178,13 +181,14 @@ const Chart = ({
           setOffset(0);
           setRange(numRows);
         }}>
-        resetZoom
+        reset Zoom
       </Button>
       {chartType === 'Line' && (
         <Button color='orange' onClick={predictData} className='m-2'>
           Predict Data
         </Button>
       )}
+      {/* {p && <p>{p}</p>} */}
     </>
   );
 };

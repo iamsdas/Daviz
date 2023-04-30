@@ -22,6 +22,15 @@ export const colors = [
   'rgb(201, 203, 207)',
 ];
 
+function downsample(data: any[]) {
+  const factor = data.length > 5000 ? Math.floor(data.length / 5000) : 1;
+  const downsampledData = [];
+  for (let i = 0; i < data.length; i += factor) {
+    downsampledData.push(data[i]);
+  }
+  return downsampledData;
+}
+
 export async function getChartData(
   fileName: string,
   yAxis: string,
@@ -30,6 +39,7 @@ export async function getChartData(
   offset?: number,
   range?: number
 ): Promise<any> {
+  const start = performance.now();
   const data: string = await invoke('get_data_for_chart', {
     fileName,
     yAxis,
@@ -40,16 +50,20 @@ export async function getChartData(
   });
   const res = JSON.parse(data);
   const chartData = {
-    labels: res.columns.find((c: any) => c.name === 'x_axis').values,
+    labels: downsample(
+      res.columns.find((c: any) => c.name === 'x_axis').values
+    ),
     datasets: res.columns
       .filter((c: any) => c.name !== 'x_axis')
       .map((c: any, index: number) => ({
         label: c.name,
-        data: c.values,
+        data: downsample(c.values),
         borderColor: colors[index % colors.length],
       })),
   };
-  return chartData;
+  const end = performance.now();
+  const time = end - start;
+  return [chartData, time];
 }
 
 export async function getTableData(
@@ -125,8 +139,14 @@ export async function getAnalyticsData(
 export async function getXAxis(
   fileName: string,
   column: string
-): Promise<string[]> {
-  return await invoke('get_rows', { fileName, column });
+): Promise<number> {
+  const data: any = await invoke('get_unique_row_count_of_column', {
+    fileName,
+    column,
+  });
+  const res = JSON.parse(data);
+  console.log(res.columns[0].values[0]);
+  return res.columns[0].values[0];
 }
 
 export function debouncedCallBack(fn: (arg: any) => void, delay: any) {

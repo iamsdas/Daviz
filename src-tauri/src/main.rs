@@ -10,7 +10,6 @@ fn get_columns(file_name: String) -> Vec<String> {
     return df.first().collect().unwrap().get_column_names_owned();
 }
 
-#[tauri::command]
 fn get_rows(file_name: String, column: String) -> Vec<String> {
     let lazy_df = get_frame_for_file(&file_name);
     return get_unique_rows_of_column(&lazy_df, &column);
@@ -161,6 +160,19 @@ fn get_col_analytics(df: &DataFrame, column: &String) -> String {
     return serde_json::to_string_pretty(&group_analytics).unwrap();
 }
 
+#[tauri::command]
+fn get_unique_row_count_of_column(file_name: String, column: String) -> String {
+    let lazy_df = get_frame_for_file(&file_name);
+    let df = lazy_df
+        .clone()
+        .select([col(&column).n_unique().alias("count")])
+        .collect()
+        .unwrap();
+
+    let a = serde_json::to_string_pretty(&df).unwrap();
+    return a;
+}
+
 fn get_unique_rows_of_column(lazy_df: &LazyFrame, column: &String) -> Vec<String> {
     let unique_rows_df = lazy_df
         .clone()
@@ -173,7 +185,7 @@ fn get_unique_rows_of_column(lazy_df: &LazyFrame, column: &String) -> Vec<String
         .iter()
         .map(|x| x.to_string())
         .map(|x| x.replace("\"", ""))
-        .collect::<Vec<String>>(); // convert into Vec<String>
+        .collect::<Vec<String>>();
 
     row_vec.sort();
     return row_vec;
@@ -216,7 +228,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![
             get_data_for_chart,
             get_columns,
-            get_rows,
+            get_unique_row_count_of_column,
             get_data_for_table,
             get_data_for_analytics
         ])

@@ -46,7 +46,7 @@ export default function Homepage() {
   const [yAxis, setYAxes] = useState<string>();
   const [groupBy, setGroupBy] = useState<string>();
 
-  const [rows, setRows] = useState<string[]>([]);
+  const [rows, setRows] = useState<number>(0);
   const [offset, setOffset] = useState<number>(0);
   const [range, setRange] = useState<number>(10);
 
@@ -73,11 +73,11 @@ export default function Homepage() {
     if (value) {
       getXAxis(file, value).then((res) => {
         setRows(res);
-        setRange(res.length);
+        setRange(res);
         setOffset(0);
       });
     } else {
-      setRows([]);
+      setRows(0);
     }
   };
 
@@ -188,7 +188,7 @@ export default function Homepage() {
                   ))}
                 </Select>
 
-                {rows.length > 0 && (
+                {rows > 0 && (
                   <>
                     <Input
                       type='number'
@@ -240,7 +240,7 @@ export default function Homepage() {
                   chartType={chartType}
                   setOffset={debouncedSetOffset}
                   setRange={debouncedSetRange}
-                  numRows={rows.length}
+                  numRows={rows}
                 />
               </TabPanel>
               <TabPanel value={'table'}>
