@@ -76,11 +76,11 @@ const Chart = ({
   const chartRef = useRef<any>(null);
 
   const chartFetchCB = ({ chart }: any) => {
-    // const { min, max } = chart.scales.x;
-    // if (min > 0 && max >= min) {
-    //   setOffset(min);
-    //   setRange(max - min + 1);
-    // }
+    const { min, max } = chart.scales.x;
+    if (min > 0 && max >= min) {
+      setOffset(min);
+      setRange(max - min + 1);
+    }
   };
 
   const predictData = async () => {
@@ -118,7 +118,7 @@ const Chart = ({
 
   useEffect(() => {
     if (file && yAxis && xAxis) {
-      getChartData(file, yAxis, xAxis, groupBy, offset, range).then(
+      getChartData(file, yAxis, xAxis, groupBy, 0, numRows).then(
         ([data, time]) => {
           if (chartRef.current) {
             chartRef.current.resetZoom();
@@ -140,7 +140,7 @@ const Chart = ({
         }
       );
     }
-  }, [file, yAxis, xAxis, groupBy, offset, range]);
+  }, [file, yAxis, xAxis, groupBy, numRows]);
 
   const chartTypesObj = {
     Line: (
@@ -174,7 +174,6 @@ const Chart = ({
       <Button
         color='blue-gray'
         onClick={() => {
-          console.log(chartRef);
           if (chartRef.current) {
             chartRef.current.resetZoom();
           }

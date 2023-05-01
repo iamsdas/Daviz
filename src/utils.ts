@@ -145,7 +145,6 @@ export async function getXAxis(
     column,
   });
   const res = JSON.parse(data);
-  console.log(res.columns[0].values[0]);
   return res.columns[0].values[0];
 }
 

@@ -10,11 +10,6 @@ fn get_columns(file_name: String) -> Vec<String> {
     return df.first().collect().unwrap().get_column_names_owned();
 }
 
-fn get_rows(file_name: String, column: String) -> Vec<String> {
-    let lazy_df = get_frame_for_file(&file_name);
-    return get_unique_rows_of_column(&lazy_df, &column);
-}
-
 #[tauri::command]
 fn get_data_for_chart(
     file_name: String,
@@ -43,7 +38,7 @@ fn get_data_for_chart(
     } else {
         let col_df = lazy_df
             .clone()
-            .select([col(&x_axis).alias("x_axis"), col(&y_axis).alias("y_axis")])
+            .select([col(&x_axis).alias("x_axis"), col(&y_axis)])
             .unique(Some(vec!["x_axis".to_string()]), UniqueKeepStrategy::First)
             .collect()
             .unwrap();

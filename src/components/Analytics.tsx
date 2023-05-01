@@ -16,7 +16,6 @@ const Analytics = ({ file, offset, range, yAxis, xAxis, groupBy }: Props) => {
     if (file && xAxis) {
       getAnalyticsData(file, xAxis, yAxis, groupBy, offset, range).then(
         (data) => {
-          console.log(data);
           setTables(data);
         }
       );
