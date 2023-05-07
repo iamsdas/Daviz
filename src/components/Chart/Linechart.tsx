@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 
 export default function Linechart({ chartData, chartFetchCB, chartRef }: any) {
@@ -37,6 +36,12 @@ export default function Linechart({ chartData, chartFetchCB, chartRef }: any) {
               },
             },
           },
+          // scales: {
+          //   xAxis: {
+          //     min: offset,
+          //     max: range + offset - 1,
+          //   },
+          // },
           // scales: {
           //   x: {
           //     display: true,

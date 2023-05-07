@@ -43,8 +43,8 @@ interface Props {
   setOffset: (offset: number) => void;
   setRange: (range: number) => void;
   numRows: number;
-  offset?: number;
-  range?: number;
+  offset: number;
+  range: number;
   yAxis?: string;
   xAxis?: string;
   groupBy?: string;
@@ -141,6 +141,20 @@ const Chart = ({
       );
     }
   }, [file, yAxis, xAxis, groupBy, numRows]);
+
+  useEffect(() => {
+    if (
+      chartRef.current &&
+      !isNaN(offset) &&
+      !isNaN(range) &&
+      chartType === 'Line'
+    ) {
+      console.log(chartRef.current);
+      chartRef.current.options.scales.x.min = offset;
+      chartRef.current.options.scales.x.max = offset + range - 1;
+      chartRef.current.update();
+    }
+  }, [offset, range]);
 
   const chartTypesObj = {
     Line: (

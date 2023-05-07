@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import Chart from './Chart';
 import {
   Button,
@@ -50,8 +50,11 @@ export default function Homepage() {
   const [offset, setOffset] = useState<number>(0);
   const [range, setRange] = useState<number>(10);
 
-  const debouncedSetRange = useCallback(debouncedCallBack(setRange, 500), []);
-  const debouncedSetOffset = useCallback(debouncedCallBack(setOffset, 500), []);
+  const debouncedSetRange = useMemo(() => debouncedCallBack(setRange, 400), []);
+  const debouncedSetOffset = useMemo(
+    () => debouncedCallBack(setOffset, 400),
+    []
+  );
 
   const importData = () => {
     openFile().then(([fileName, columnsOfFile]) => {
@@ -81,42 +84,49 @@ export default function Homepage() {
     }
   };
 
-  const extractText = (text: string) => {
-    alert(text);
-    const words = text.split(' ');
-    const chartType = words.find((word) =>
-      ['Line', 'Bar', 'Pie', 'Scatter', 'Doughnut'].includes(word)
-    );
-    if (chartType) {
-      switch (chartType) {
-        case 'Line':
-          setUserPurpose('Trends');
-          break;
-        case 'Bar':
-          setUserPurpose('Distribution');
-          break;
-        case 'Pie':
-          setUserPurpose('Composition');
-          break;
-        case 'Scatter':
-          setUserPurpose('Comparision');
-          break;
-        case 'Doughnut':
-          setUserPurpose('Composition');
-          break;
+  const extractText = useCallback(
+    (text: string) => {
+      const words = text.split(' ');
+      const chartType = words.find((word) =>
+        ['Line', 'Bar', 'Pie', 'Scatter', 'Doughnut'].includes(word)
+      );
+      if (chartType) {
+        switch (chartType) {
+          case 'Line':
+            setUserPurpose('Trends');
+            break;
+          case 'Bar':
+            setUserPurpose('Distribution');
+            break;
+          case 'Pie':
+            setUserPurpose('Composition');
+            break;
+          case 'Scatter':
+            setUserPurpose('Comparision');
+            break;
+          case 'Doughnut':
+            setUserPurpose('Composition');
+            break;
+        }
+        setChartType(chartType as ChartType);
       }
-      setChartType(chartType as ChartType);
-    }
-    const cols: string[] = words.filter((word) => columns.includes(word));
-    if (cols.length > 0) {
-      const xAxis = cols[0];
-      handleXAxisChange(xAxis);
-    }
-    if (cols.length > 1) {
-      const yAxis = cols[1];
-      setYAxes(yAxis);
-    }
-  };
+      const cols: string[] = words.filter((word) => columns.includes(word));
+      if (cols.length > 0) {
+        const xAxis = cols[0];
+        handleXAxisChange(xAxis);
+      }
+      if (cols.length > 1) {
+        const yAxis = cols[1];
+        setYAxes(yAxis);
+      }
+    },
+    [columns]
+  );
+
+  const descriptionChange = useMemo(
+    () => debouncedCallBack(extractText, 400),
+    [extractText]
+  );
 
   return (
     <div className=' w-full h-screen flex flex-row'>
@@ -144,6 +154,7 @@ export default function Homepage() {
             {userPurpose && (
               <Select
                 label='Select chart type'
+                key={userPurpose + chartType}
                 value={chartType}
                 onChange={setChartType as any}>
                 {options[userPurpose].map((item, index) => {
@@ -161,6 +172,7 @@ export default function Homepage() {
                 <Select
                   label='Choose the x-axis'
                   value={xAxis}
+                  key={xAxis}
                   onChange={handleXAxisChange}>
                   {columns.map((item, index) => (
                     <Option key={index} value={item}>
@@ -171,6 +183,7 @@ export default function Homepage() {
 
                 <Select
                   label='Choose the y-axis'
+                  key={yAxis}
                   value={yAxis}
                   onChange={setYAxes}>
                   {columns.map((item) => (
@@ -180,7 +193,11 @@ export default function Homepage() {
                   ))}
                 </Select>
 
-                <Select label='Group by' value={groupBy} onChange={setGroupBy}>
+                <Select
+                  label='Group by'
+                  key={groupBy}
+                  value={groupBy}
+                  onChange={setGroupBy}>
                   {columns.map((item) => (
                     <Option key={item} value={item}>
                       {item}
@@ -192,7 +209,8 @@ export default function Homepage() {
                   <>
                     <Input
                       type='number'
-                      value={offset}
+                      key={offset}
+                      defaultValue={offset}
                       onChange={(e) =>
                         debouncedSetOffset(parseInt(e.target.value))
                       }
@@ -200,7 +218,8 @@ export default function Homepage() {
                     />
                     <Input
                       type='number'
-                      value={range}
+                      key={range}
+                      defaultValue={range}
                       onChange={(e) =>
                         debouncedSetRange(parseInt(e.target.value))
                       }
@@ -260,7 +279,7 @@ export default function Homepage() {
           <Textarea
             label='Describe your data'
             onChange={(e) => {
-              extractText(e.target.value);
+              descriptionChange(e.target.value);
             }}
           />
         </div>
